@@ -13,7 +13,7 @@ export const profile = {
   gpa: '3.82',
   grad: 'June 2028',
   location: 'San Diego, CA',
-  portrait: null, // e.g. '/portrait.jpg' after adding the file to /public
+  portrait: '/portrait.jpg', // file lives in /public
 }
 
 export const nav = [

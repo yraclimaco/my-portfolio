@@ -204,9 +204,9 @@ section { position: relative; }
 .about, .experience, .projects { max-width: var(--container); margin: 0 auto; padding: 130px var(--pad) 40px; }
 .about-grid { display: grid; grid-template-columns: 0.8fr 1.2fr; gap: 80px; align-items: start; }
 .portrait { position: relative; aspect-ratio: 4/5; border-radius: 28px; overflow: hidden; background: linear-gradient(160deg, var(--accent), var(--accent-2)); box-shadow: var(--shadow); }
-.portrait img { width: 100%; height: 100%; object-fit: cover; }
+.portrait img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; }
 .portrait-ph { height: 100%; display: grid; place-items: center; font-size: 6rem; font-weight: 800; color: rgba(255, 255, 255, 0.9); }
-.portrait-badge { position: absolute; bottom: 20px; left: 20px; background: #fff; font-family: var(--font-mono); font-size: 0.7rem; padding: 10px 14px; border-radius: 14px; line-height: 1.35; }
+.portrait-badge { position: absolute; bottom: 20px; left: 20px; background: #fff; z-index: 1; font-family: var(--font-mono); font-size: 0.7rem; padding: 10px 14px; border-radius: 14px; line-height: 1.35; }
 .about-copy h2 { font-size: clamp(1.6rem, 3vw, 2.3rem); font-weight: 700; letter-spacing: -0.01em; margin-bottom: 24px; max-width: 22ch; }
 .about-copy p { margin-bottom: 18px; color: var(--muted); max-width: 60ch; }
 .focus { display: flex; flex-wrap: wrap; gap: 8px; margin: 24px 0 8px; }
