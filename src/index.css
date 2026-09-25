@@ -198,6 +198,12 @@ section { position: relative; }
 .h-fade { opacity: 0; transform: translateY(30px); }
 .hero-sub { max-width: 56ch; font-size: clamp(1rem, 1.6vw, 1.2rem); color: var(--muted); margin-bottom: 36px; }
 .hero-actions { display: flex; gap: 16px; flex-wrap: wrap; }
+.about-links { display: flex; gap: 22px; margin: 6px 0 22px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--muted); }
+.about-links a { border-bottom: 1px solid var(--line); padding-bottom: 2px; transition: color 0.2s, border-color 0.2s; }
+.about-links a:hover { color: var(--accent); border-color: var(--accent); }
+.hero-social { display: flex; gap: 22px; margin-top: 22px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--muted); }
+.hero-social a { border-bottom: 1px solid var(--line); padding-bottom: 2px; transition: color 0.2s, border-color 0.2s; }
+.hero-social a:hover { color: var(--accent); border-color: var(--accent); }
 .hero-marquee { position: relative; z-index: 2; margin-top: 60px; border-top: 1px solid var(--line); padding-top: 22px; }
 
 /* ---------- about ---------- */
@@ -246,6 +252,8 @@ section { position: relative; }
 .project li { padding-left: 18px; position: relative; margin-bottom: 8px; max-width: 58ch; }
 .project li::before { content: '→'; position: absolute; left: 0; color: var(--accent); }
 .project .tags span { background: #fff; color: var(--ink); border: 1px solid var(--line); }
+.project-links { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
+.project-links .btn { margin-top: 0; padding: 11px 20px; font-size: 0.8rem; }
 .project-metric { text-align: center; }
 .project-metric b { display: block; font-size: clamp(3.4rem, 10vw, 8rem); font-weight: 800; letter-spacing: -0.04em; line-height: 0.95; color: var(--accent); }
 .project-metric span { display: block; font-family: var(--font-mono); font-size: 0.78rem; margin-top: 12px; color: var(--muted); }

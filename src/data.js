@@ -5,7 +5,7 @@ export const profile = {
   firstName: 'Yra',
   initials: 'YC',
   email: 'climacoyra@gmail.com',
-  linkedin: 'https://linkedin.com/in/yra-climaco',
+  linkedin: 'https://www.linkedin.com/in/yra-climaco',
   github: 'https://github.com/yraclimaco',
   resume: '/Yra_Climaco_Resume.pdf', // replace public/Yra_Climaco_Resume.pdf when your resume changes
   school: 'University of California, San Diego',
@@ -90,7 +90,10 @@ export const projects = [
       'Automated live predictions with GCS and Cloud Run; time-series EDA surfaced daily wind cycles as a key signal.',
     ],
     tags: ['Python', 'Scikit-learn', 'GCP'],
-    link: null,
+    links: [
+      { label: 'Live app', url: 'https://surfcast-frontend-19545389323.us-west1.run.app/' },
+      { label: 'GitHub', url: 'https://github.com/kanglee05/Surf-Cast-SD' },
+    ],
   },
   {
     title: 'Snowball Effect in Pro LoL',
@@ -106,7 +109,10 @@ export const projects = [
       'Analyzed missingness and potential bias; published an interactive report covering EDA, testing, and model evaluation.',
     ],
     tags: ['Python', 'Pandas', 'Scikit-learn', 'Plotly'],
-    link: null, // add the live site URL here to show a "Live site" button
+    links: [
+      { label: 'Live report', url: 'https://yraclimaco.github.io/lol-snowball-analysis/' },
+      { label: 'GitHub', url: 'https://github.com/yraclimaco/lol-snowball-analysis' },
+    ],
   },
   {
     title: 'TubeScope',
@@ -122,7 +128,10 @@ export const projects = [
       'Placed 3rd of 10 teams for technical execution and presentation.',
     ],
     tags: ['Python', 'Pandas', 'Plotly', 'Survival analysis'],
-    link: null,
+    links: [
+      { label: 'Live app', url: 'https://tubescopeds3.streamlit.app/' },
+      { label: 'GitHub', url: 'https://github.com/VedVar43789/TubeScope' },
+    ],
   },
 ]
 
