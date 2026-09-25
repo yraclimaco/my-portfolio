@@ -48,14 +48,15 @@ export default function Intro({ onReveal, onDone }) {
           .fromTo(cap, { y: 14, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, ease: 'power3.out' }, at)
 
       gsap.set(q('.beat'), { autoAlpha: 0 })
-      gsap.set(root.current, { clipPath: 'circle(150% at 50% 50%)' })
+      const pageBg = () => getComputedStyle(document.documentElement).getPropertyValue('--bg').trim()
+      const coverScale = () =>
+        Math.max(window.innerWidth / chosen.offsetWidth, window.innerHeight / chosen.offsetHeight) * 1.12
       gsap.set(q('.cards'), { transformOrigin: '50% 50%' })
       gsap.set(cards, { transformOrigin: '50% 135%' })
       dice.forEach((d) => setFace(d, 1))
 
       const tl = gsap.timeline({ onComplete: onDone })
       tlRef.current = tl
-
       // 1. BOARD GAMES — dice roll
       const roll = { t: 0, last: -1 }
       say(tl, 'Roll the dice.', 0.3)
@@ -125,13 +126,18 @@ export default function Intro({ onReveal, onDone }) {
         .to(cards, { x: (i) => (i % 2 ? -80 : 80), duration: 0.16, stagger: 0.03, yoyo: true, repeat: 3, ease: 'power2.inOut' }, 6.75)
         .to(cards, { x: 0, y: 0, rotation: (i) => (i - 2) * 15, xPercent: (i) => (i - 2) * 42, duration: 0.6, ease: 'back.out(1.4)', stagger: 0.03 }, 7.7)
         .to(others, { opacity: 0.4, duration: 0.3 }, 8.5)
+        .set(chosen, { transformOrigin: '50% 50%' }, 8.5)
         .to(chosen, { y: -70, duration: 0.35, ease: 'power2.out', zIndex: 10 }, 8.5)
         .to(chosen, { rotation: 0, xPercent: 0, y: -10, scale: 1.75, duration: 0.5, ease: 'power3.inOut' }, 8.85)
         .to(others, { opacity: 0, duration: 0.3 }, 8.85)
         .to(q('.pcard-inner')[2], { rotationY: 180, duration: 0.7, ease: 'power3.inOut' }, 8.95)
-        .call(onReveal, null, 10.15)
-        .to(root.current, { clipPath: 'circle(0% at 50% 50%)', duration: 0.85, ease: 'power3.inOut' }, 10.05)
         .to(q('.intro-caption, .intro-skip, .intro-progress'), { opacity: 0, duration: 0.2 }, 9.9)
+        // the picked card rushes toward the screen until its face IS the page background
+        .to(chosen, { scale: coverScale, y: 0, duration: 1, ease: 'power3.inOut' }, 10)
+        .to(q('.pcard-name, .corner'), { opacity: 0, duration: 0.4 }, 10.15)
+        .to(q('.pcard-front')[2], { backgroundColor: pageBg, borderColor: pageBg, duration: 0.6 }, 10.3)
+        .call(onReveal, null, 10.85)
+        .to(root.current, { opacity: 0, duration: 0.6, ease: 'power2.inOut' }, 10.95)
 
       tl.eventCallback('onUpdate', () => {
         const bar = q('.intro-progress i')[0]
@@ -173,7 +179,7 @@ export default function Intro({ onReveal, onDone }) {
 
         <div className="beat beat-belt">
           <svg className="belt-svg" viewBox="0 0 400 200" role="img">
-            <g stroke="#0E1224" strokeWidth="3" strokeLinejoin="round">
+            <g style={{ stroke: 'var(--ink)' }} strokeWidth="3" strokeLinejoin="round">
               <path className="belt-tail belt-fill" fill="#F4F4F4" d="M188 104 L158 182 L186 192 L206 106 Z" />
               <path className="belt-tail belt-fill" fill="#F4F4F4" d="M194 106 L214 192 L242 182 L212 104 Z" />
               <rect className="belt-band belt-fill" fill="#F4F4F4" x="30" y="70" width="340" height="30" />
