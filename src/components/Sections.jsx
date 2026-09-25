@@ -59,6 +59,10 @@ export function About() {
           <div className="focus" data-reveal>
             {focusAreas.map((f) => <span key={f}>{f}</span>)}
           </div>
+          <div className="about-links" data-reveal>
+            <a href={profile.linkedin} target="_blank" rel="noreferrer">LinkedIn ↗</a>
+            <a href={profile.github} target="_blank" rel="noreferrer">GitHub ↗</a>
+          </div>
           <p data-reveal>
             Projects like a pro League of Legends outcome analysis and a YouTube viral-trend predictor come
             straight from that curiosity about engagement, retention, and what keeps audiences hooked. Away from
@@ -147,9 +151,19 @@ export function Projects() {
               <p className="project-sub">{p.subtitle}</p>
               <ul>{p.bullets.map((b) => <li key={b}>{b}</li>)}</ul>
               <div className="tags">{p.tags.map((t) => <span key={t}>{t}</span>)}</div>
-              {p.link && (
-                <a className="btn btn-dark" href={p.link} target="_blank" rel="noreferrer">Live site ↗</a>
-              )}
+              <div className="project-links">
+                {p.links.map((l, i) => (
+                  <a
+                    key={l.url}
+                    className={`btn ${i === 0 ? 'btn-dark' : 'btn-outline-light'}`}
+                    href={l.url}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {l.label} ↗
+                  </a>
+                ))}
+              </div>
             </div>
             <div className="project-metric">
               <b>{p.metric}</b>

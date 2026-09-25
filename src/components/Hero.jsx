@@ -56,6 +56,10 @@ export default function Hero({ play }) {
           <a href="#projects" className="btn btn-light">See my work</a>
           <a href={profile.resume} target="_blank" rel="noreferrer" className="btn btn-outline-light">Résumé ↗</a>
         </div>
+        <div className="hero-social h-fade">
+          <a href={profile.linkedin} target="_blank" rel="noreferrer">LinkedIn ↗</a>
+          <a href={profile.github} target="_blank" rel="noreferrer">GitHub ↗</a>
+        </div>
       </div>
 
       <div className="hero-marquee">
