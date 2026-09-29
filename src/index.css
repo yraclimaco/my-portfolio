@@ -16,6 +16,7 @@
   --tint-a: #eef0ff;
   --tint-b: #f3edff;
   --tint-c: #e8f6f6;
+  --tint-d: #fdf1e2;
   --blob-a: #a5b4fc;
   --blob-b: #ddd6fe;
   --blob-c: #bae6fd;
@@ -47,6 +48,7 @@
   --tint-a: #151936;
   --tint-b: #1b1638;
   --tint-c: #10232a;
+  --tint-d: #2a1f10;
   --blob-a: #3730a3;
   --blob-b: #5b21b6;
   --blob-c: #155e75;
@@ -300,6 +302,7 @@ section { position: relative; }
 .project--coral { background: var(--tint-a); }
 .project--purple { background: var(--tint-b); }
 .project--teal { background: var(--tint-c); }
+.project--amber { background: var(--tint-d); }
 .project-date { font-family: var(--font-mono); font-size: 0.78rem; color: var(--muted); margin-bottom: 12px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
 .lens { background: var(--ink); color: var(--bg); padding: 4px 10px; border-radius: 999px; font-size: 0.68rem; }
 .project h3 { font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 800; letter-spacing: -0.02em; line-height: 1; }
