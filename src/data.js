@@ -133,6 +133,24 @@ export const projects = [
       { label: 'GitHub', url: 'https://github.com/VedVar43789/TubeScope' },
     ],
   },
+  {
+    title: 'ADCC Grappling Analysis',
+    lens: 'BJJ × data',
+    subtitle: 'Two decades of submission grappling, in data',
+    date: 'Sept 2025 · Independent',
+    color: 'amber',
+    metric: '3×',
+    metricLabel: 'rise in heel hook finishes (7% of subs pre-2012 → 21% since)',
+    bullets: [
+      'Analyzed 1,028 ADCC World Championship matches from 1998–2022, categorizing every win by submission, points, or decision.',
+      'The Rear Naked Choke held steady at ~25% of all submissions across both eras — the sport’s most consistent finish — even as the heel hook nearly tripled its share.',
+      'Championship finals are decided by points 60.5% of the time vs. 49.7% in earlier rounds — a measurably more conservative style once a title is on the line.',
+    ],
+    tags: ['Python', 'Pandas', 'Seaborn', 'EDA'],
+    links: [
+      { label: 'GitHub', url: 'https://github.com/yraclimaco/ADCC-Grappling-Analysis' },
+    ],
+  },
 ]
 
 export const skills = [
