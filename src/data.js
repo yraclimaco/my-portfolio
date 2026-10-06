@@ -45,10 +45,10 @@ export const experience = [
     org: 'Innovating for National Security (i4NS)',
     place: 'San Diego, CA',
     bullets: [
-      'Scoping data-driven approaches to address navigation and inertial system drift for Extra Large Unmanned Undersea Vehicles (XLUUVs) during long-duration submerged transit.',
-      'Collaborating with a 5-person research team to translate an ambiguous technical problem into analytical requirements, constraints, and potential solution approaches.',
+      'Conducting recurring interviews with problem sponsors and subject matter experts to uncover user needs, test assumptions, and refine an ambiguous technical problem.',
+      'Collaborating with a 5-person team to translate stakeholder feedback and technical research into clearer analytical requirements, constraints, and solution priorities.',
     ],
-    tags: ['Research', 'Systems analysis', 'Teamwork'],
+    tags: ['User research', 'Stakeholder interviews', 'Teamwork'],
   },
   {
     date: 'Aug 2026 — Present',
@@ -56,10 +56,10 @@ export const experience = [
     org: 'Data Science Student Society (DS3)',
     place: 'San Diego, CA',
     bullets: [
-      'Mentoring student project teams within a 600+ member organization on end-to-end data product development and cloud deployment (GCP, AWS).',
-      'Providing technical reviews on analytical methodology, data cleaning pipelines, exploratory data analysis, and model implementation.',
+      'Supporting student project teams with problem scoping, data analysis, project planning, and technical decision-making across end-to-end data projects.',
+      'Providing feedback on analytical methodology, data cleaning, exploratory analysis, model evaluation, and communication of results.',
     ],
-    tags: ['Mentorship', 'GCP', 'AWS'],
+    tags: ['Mentorship', 'Problem scoping', 'Data analysis'],
   },
   {
     date: 'Feb 2026 — June 2026',
@@ -67,11 +67,11 @@ export const experience = [
     org: 'Center for Community Energy (CCE)',
     place: 'San Diego, CA',
     bullets: [
-      'Built a PostgreSQL database identifying 900+ commercial solar prospects across San Diego County in partnership with the Move Now renewable energy team.',
-      'Engineered a SQL ETL pipeline using CTEs, JOINs, CASE WHEN, and UNION ALL to clean, integrate, and standardize inconsistent datasets.',
-      'Applied LEFT JOIN logic to find organizations missing from existing prospect lists and surface additional outreach opportunities.',
+      'Built a PostgreSQL database identifying 900+ commercial solar prospects across San Diego County by integrating and analyzing multiple inconsistent datasets.',
+      'Engineered a SQL ETL pipeline using CTEs, JOINs, CASE WHEN, and UNION ALL to clean, standardize, and validate source data for prospect analysis.',
+      'Applied LEFT JOIN logic to identify missing organizations, investigate gaps in existing prospect lists, and surface additional outreach opportunities.',
     ],
-    tags: ['PostgreSQL', 'SQL', 'ETL'],
+    tags: ['PostgreSQL', 'SQL', 'ETL', 'Data validation'],
   },
 ]
 
@@ -104,9 +104,9 @@ export const projects = [
     metric: '73.6%',
     metricLabel: 'test accuracy, +23.6 pts over the 50% baseline',
     bullets: [
-      'Evaluated 9,236 professional matches with permutation testing (p < 0.001).',
-      'Random Forest classifier on 15-minute game states.',
-      'Analyzed missingness and potential bias; published an interactive report covering EDA, testing, and model evaluation.',
+      'Analyzed player and match behavior across 9,236 professional League of Legends matches to quantify how early-game advantages influence outcomes.',
+      'Applied permutation testing (p < 0.001) and predictive modeling with a Random Forest on 15-minute game states.',
+      'Evaluated missingness and potential bias; published an interactive report communicating EDA, statistical testing, model evaluation, and findings.',
     ],
     tags: ['Python', 'Pandas', 'Scikit-learn', 'Plotly'],
     links: [
@@ -123,9 +123,9 @@ export const projects = [
     metric: '83%',
     metricLabel: 'viral-trend drop-off rate, 3rd place at DS3 Showcase',
     bullets: [
-      'Kaplan-Meier survival analysis of trend lifetimes; Random Forest with 68% recall and a 3× precision lift.',
-      'Engineered features from YouTube Data API metadata into an automated pipeline powering a live dashboard.',
-      'Placed 3rd of 10 teams for technical execution and presentation.',
+      'Integrated the YouTube Data API to analyze metadata and audience behavior, identifying an 83% viral-trend drop-off rate with Kaplan-Meier survival analysis.',
+      'Built a Random Forest classifier achieving 68% recall and a 3× precision lift for identifying viral-trending videos.',
+      'Engineered features and an automated data pipeline powering live dashboard analytics; placed 3rd of 10 teams at the DS3 Showcase.',
     ],
     tags: ['Python', 'Pandas', 'Plotly', 'Survival analysis'],
     links: [
@@ -155,19 +155,22 @@ export const projects = [
 
 export const skills = [
   { title: 'Languages', items: ['Python', 'SQL'] },
-  { title: 'Libraries', items: ['Pandas', 'NumPy', 'Scikit-learn', 'Matplotlib', 'Seaborn', 'Plotly'] },
   {
-    title: 'Statistics / ML',
+    title: 'Analytics',
     items: [
-      'Hypothesis Testing', 'A/B Testing', 'Permutation Testing', 'Survival Analysis',
-      'Time-Series Analysis', 'EDA', 'Feature Engineering', 'Model Evaluation', 'Hyperparameter Optimization',
+      'Statistical Analysis', 'Hypothesis Testing', 'A/B Testing', 'Permutation Testing',
+      'Behavioral Analysis', 'EDA', 'Data Visualization',
     ],
   },
+  { title: 'Libraries', items: ['Pandas', 'NumPy', 'Scikit-learn', 'Matplotlib', 'Seaborn', 'Plotly'] },
   {
-    title: 'Cloud / Data',
-    items: ['GCP (Cloud Run, GCS)', 'AWS (S3, EC2, Lambda)', 'PostgreSQL', 'ETL Pipelines'],
+    title: 'Data / Cloud',
+    items: [
+      'PostgreSQL', 'ETL Pipelines', 'Data Cleaning', 'Data Validation',
+      'GCP (Cloud Run, GCS)', 'AWS (S3, EC2, Lambda)',
+    ],
   },
-  { title: 'Tools', items: ['Claude Code', 'Tableau', 'Excel', 'Git', 'Jupyter', 'VS Code'] },
+  { title: 'Tools', items: ['Tableau', 'Excel', 'Git', 'Jupyter', 'VS Code'] },
 ]
 
 export const certification = {
