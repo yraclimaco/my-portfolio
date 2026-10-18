@@ -1,12 +1,68 @@
+import { useRef } from 'react'
+import { Link } from 'react-router-dom'
 import { experience } from '../content/experience'
-import { certification } from '../content/about'
-import { profile } from '../content/profile'
+import { MOTION_OK, ScrollTrigger, gsap, panelScroller, refreshWhenSettled, useGSAP } from '../lib/scroll'
 import { usePageMeta } from '../lib/usePageMeta'
 
 export default function Experience() {
   usePageMeta('Experience', 'Experience of Yra Climaco: i4NS, Data Science Student Society, and the Center for Community Energy.')
+  const root = useRef(null)
+
+  useGSAP(
+    () => {
+      const scroller = panelScroller(root.current)
+      if (!scroller) return
+      const mm = gsap.matchMedia()
+      mm.add(MOTION_OK, () => {
+        // Markers start unfilled only when they will be filled in; otherwise they show as reached.
+        const timeline = root.current.querySelector('.timeline')
+        timeline.classList.add('is-animated')
+        // The connecting line draws with the scroll (tied directly to it, no smoothing lag). On a
+        // surface too short to scroll, 'max' is 0 and the line is simply drawn in full.
+        gsap.fromTo(
+          '.timeline__fill',
+          { scaleY: 0 },
+          { scaleY: 1, ease: 'none', scrollTrigger: { trigger: '.timeline', scroller, start: 'top 75%', end: 'max', scrub: true } },
+        )
+        // Each entry is emphasised once as it arrives: its marker fills and the entry rises in.
+        gsap.utils.toArray('.role', root.current).forEach((role, i) => {
+          const body = role.querySelector('.role__body')
+          gsap.set(body, { opacity: 0, y: 14 })
+          ScrollTrigger.create({
+            trigger: role,
+            scroller,
+            start: 'top 88%',
+            once: true,
+            onEnter: () => {
+              role.classList.add('is-reached')
+              gsap.to(body, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out', delay: i < 2 ? 0.12 + i * 0.08 : 0, clearProps: 'transform' })
+            },
+          })
+        })
+        // Safety net (wall clock): anything on screen that missed its trigger is shown anyway.
+        const safety = setTimeout(() =>
+          gsap.utils.toArray('.role', root.current).forEach((role) => {
+            const r = role.getBoundingClientRect()
+            const box = scroller.getBoundingClientRect()
+            if (r.top < box.bottom && !role.classList.contains('is-reached')) {
+              role.classList.add('is-reached')
+              gsap.set(role.querySelector('.role__body'), { opacity: 1, y: 0 })
+            }
+          }),
+        1600)
+        const stopRefresh = refreshWhenSettled(root.current)
+        return () => {
+          clearTimeout(safety)
+          stopRefresh()
+          timeline.classList.remove('is-animated')
+        }
+      })
+    },
+    { scope: root },
+  )
+
   return (
-    <div className="section">
+    <div className="section" ref={root}>
       <header className="section__head">
         <h1 id="panel-title" className="section__title" tabIndex={-1}>
           Experience
@@ -14,23 +70,26 @@ export default function Experience() {
         <p className="section__lead">Research, mentoring, and data engineering, most recent first.</p>
       </header>
 
-      <div className="split">
-        <ol className="track">
+      <div className="timeline">
+        <div className="timeline__line" aria-hidden="true">
+          <span className="timeline__fill" />
+        </div>
+        <ol className="roles">
           {experience.map((job) => (
-            <li className={`track__stop${job.current ? ' is-current' : ''}`} key={job.id}>
-              <span className="track__marker" aria-hidden="true" />
-              <div className="track__body">
-                <p className="track__dates">
-                  {job.dates}
+            <li className={`role${job.current ? ' is-current' : ''}`} key={job.id}>
+              <span className="role__dot" aria-hidden="true" />
+              <div className="role__body">
+                <p className="role__when">
+                  <span>{job.dates}</span>
                   {job.current && <span className="tag">Current</span>}
                 </p>
-                <h2 className="track__role">{job.role}</h2>
-                <p className="track__org">
+                <h2 className="role__title">{job.role}</h2>
+                <p className="role__org">
                   {job.org}
                   <span aria-hidden="true"> · </span>
                   {job.place}
                 </p>
-                <p className="track__summary">{job.summary}</p>
+                <p className="role__summary">{job.summary}</p>
                 <ul className="bullets">
                   {job.bullets.map((b) => (
                     <li key={b}>{b}</li>
@@ -45,31 +104,11 @@ export default function Experience() {
             </li>
           ))}
         </ol>
-
-        <aside className="side-notes">
-          <section className="note note--sage" aria-labelledby="edu-title">
-            <h2 id="edu-title" className="note__h">
-              Education
-            </h2>
-            <p className="note__big">{profile.education.school}</p>
-            <p>{profile.education.degree}</p>
-            <p className="muted">
-              GPA {profile.education.gpa}
-              <span aria-hidden="true"> · </span>
-              {profile.education.expected}
-            </p>
-          </section>
-          <section className="note note--butter" aria-labelledby="cert-title">
-            <h2 id="cert-title" className="note__h">
-              Certification
-            </h2>
-            <p className="note__big">{certification.name}</p>
-            <p className="muted">
-              {certification.issuer} · {certification.date}
-            </p>
-          </section>
-        </aside>
       </div>
+
+      <p className="section__aside">
+        Education and certification are on the <Link to="/about">About</Link> page.
+      </p>
     </div>
   )
 }

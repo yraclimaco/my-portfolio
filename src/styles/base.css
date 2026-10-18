@@ -123,6 +123,18 @@ main:focus {
   outline: none;
 }
 
+/* Long words (and enlarged text on narrow screens) wrap instead of pushing past their box. */
+h1,
+h2,
+h3,
+p,
+li,
+dt,
+dd,
+figcaption {
+  overflow-wrap: break-word;
+}
+
 .muted {
   color: var(--muted);
 }
@@ -148,6 +160,8 @@ main:focus {
   font-weight: 600;
   line-height: 1.2;
   text-decoration: none;
+  max-width: 100%;
+  overflow-wrap: anywhere;
   border: 0;
   border-radius: 999px;
   cursor: pointer;
@@ -237,6 +251,8 @@ main:focus {
 }
 
 .chips li {
+  max-width: 100%;
+  min-width: 0;
   padding: 0.2rem 0.75rem;
   font-size: 0.9rem;
   font-weight: 600;

@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import { useLocation, useNavigate, useRoutes } from 'react-router-dom'
 import HexBoard from './components/HexBoard'
-import BoxIntro from './components/BoxIntro'
+import BoxFallback from './components/BoxFallback'
+import World from './components/World'
 import Panel from './components/Panel'
 import SiteHeader from './components/SiteHeader'
 import { routes } from './routes'
@@ -10,6 +11,8 @@ import { BOX_OPENED_KEY, PIECE_KEY, session } from './lib/session'
 import { WIDE_QUERY } from './lib/layout'
 import { useReducedMotion } from './lib/motion'
 import { usePageMeta } from './lib/usePageMeta'
+import { webglAvailable } from './lib/webgl'
+import { HomeContext } from './lib/home'
 
 function useMedia(query) {
   return useSyncExternalStore(
@@ -36,6 +39,9 @@ export default function App() {
   const reduced = useReducedMotion()
   const wide = useMedia(WIDE_QUERY)
   const section = sectionFor(location.pathname)
+  // One continuous 3D world when the browser can draw it; the flat board and printed box otherwise.
+  const [engine, setEngine] = useState(() => (webglAvailable() ? '3d' : '2d'))
+  const onWorldFail = useCallback(() => setEngine('2d'), [])
 
   // ---- Box: shown once per session, only when the visit starts on the board.
   const [boxOpened, setBoxOpened] = useState(
@@ -93,7 +99,7 @@ export default function App() {
     let el = null
     if (focusWant.to === 'panel' && panel?.section === section && panel.phase !== 'leave') {
       el = document.querySelector('.panel:not(.panel--leave) #panel-title')
-    } else if (focusWant.to === 'board' && (!panel || panel.phase === 'leave')) {
+    } else if (focusWant.to === 'board' && !boxVisible && (!panel || panel.phase === 'leave')) {
       el = document.querySelector(`[data-dest="${robber.at}"]`) ?? document.getElementById('board-title')
     } else if (focusWant.to === 'board-title' && !boxVisible) {
       el = document.getElementById('board-title')
@@ -126,6 +132,15 @@ export default function App() {
     [location.pathname, navigate],
   )
 
+  // Home: close any open content, then take the board back into the box (the reverse journey).
+  const [homeDelay, setHomeDelay] = useState(0)
+  const goHome = useCallback(() => {
+    // Let the content surface start closing before the camera pulls back.
+    setHomeDelay(panel && panel.phase !== 'leave' && !reduced ? 0.28 : 0)
+    setBoxOpened(false)
+    if (location.pathname !== '/') navigate('/')
+  }, [panel, reduced, location.pathname, navigate])
+
   const onBoxOpened = useCallback(() => {
     setBoxOpened(true)
     setRevealKey((k) => k + 1)
@@ -137,21 +152,35 @@ export default function App() {
   const focusDest = panel ? (destinationFor(panel.section)?.id ?? null) : null
 
   return (
-    <>
+    <HomeContext.Provider value={goHome}>
       {!boxVisible && (
         <a className="skip-link" href="#main">
           Skip to content
         </a>
       )}
-      <div className="app" inert={boxVisible}>
+      <div className="app" inert={engine === '2d' && boxVisible}>
         {/* The open content surface is modal: everything behind it is inert. */}
-        <div className="header-wrap" inert={panelOpen}>
+        <div className={`header-wrap${boxVisible ? ' is-intro' : ''}`} inert={panelOpen || boxVisible}>
           <SiteHeader />
         </div>
         <main id="main" tabIndex={-1}>
           {!section && <BoardMeta />}
           <div className="board-wrap" inert={panelOpen}>
-            <HexBoard robber={robber} focusDest={focusDest} panelOpen={panelOpen} reduced={reduced} onDrop={onDrop} revealKey={revealKey} />
+            {engine === '3d' ? (
+              <World
+                intro={boxVisible}
+                homeDelay={homeDelay}
+                onOpened={onBoxOpened}
+                robber={robber}
+                panelOpen={panelOpen}
+                focusDest={focusDest}
+                reduced={reduced}
+                onDrop={onDrop}
+                onFail={onWorldFail}
+              />
+            ) : (
+              <HexBoard robber={robber} focusDest={focusDest} panelOpen={panelOpen} reduced={reduced} onDrop={onDrop} revealKey={revealKey} />
+            )}
           </div>
           {panel && (
             <Panel phase={panel.phase} section={panel.section} wide={wide} onExited={onPanelExited}>
@@ -160,7 +189,7 @@ export default function App() {
           )}
         </main>
       </div>
-      {boxVisible && <BoxIntro onOpened={onBoxOpened} reducedMotion={reduced} />}
-    </>
+      {engine === '2d' && boxVisible && <BoxFallback onOpened={onBoxOpened} reducedMotion={reduced} />}
+    </HomeContext.Provider>
   )
 }

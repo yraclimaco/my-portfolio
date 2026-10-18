@@ -1,8 +1,8 @@
+// The main introduction, shown once (on About). Same words as profile.intro, split for reading.
 export const about = {
-  lead: 'I’m most interested in the products people choose to spend their free time on, like games, streaming, and entertainment, and in what the data says about how people actually use them.',
   paragraphs: [
-    'I study Data Science at UC San Diego with a minor in Business Analytics. My work so far spans SQL pipelines for renewable-energy outreach, statistical testing on professional esports data, survival analysis of YouTube trends, and a deployed surf-forecasting model.',
-    'My goal is product analytics at a consumer tech company: framing the right question, testing it rigorously, and communicating what the data does and doesn’t support.',
+    'I’m a Data Science student at UC San Diego who’s curious about people, the choices they make, and the products they love.',
+    'I enjoy turning that curiosity into projects, learning alongside others, and finding useful patterns in messy data. My goal is to bring data and an understanding of people together to help build better everyday experiences.',
   ],
 }
 
@@ -28,10 +28,11 @@ export const certification = {
 
 export const interestsLine = 'Outside of data: Brazilian Jiu-Jitsu, board games, card magic, and trying new food.'
 
-// Interests revealed by the "Draw a card" deck on the About page.
+// Interests on the About page. To use a real photo, set `image` (a path in /public) and describe it
+// in `alt`; the card then shows the photo in its image area instead of the suit mark.
 export const interests = [
-  { suit: '♠', title: 'Brazilian Jiu-Jitsu', note: 'It also became a dataset. See the ADCC analysis in Work.', link: '/work/adcc' },
-  { suit: '♦', title: 'Board games', note: 'The reason this portfolio is a board.' },
-  { suit: '♣', title: 'Card magic', note: 'Practicing sleight of hand. The deck on this page is stacked, by the way.' },
-  { suit: '♥', title: 'Trying new food', note: 'Always looking for the next place to try.' },
+  { suit: '♠', title: 'Brazilian Jiu-Jitsu', note: 'It also became a dataset.', link: '/projects/adcc', linkLabel: 'See the ADCC analysis', image: null, alt: '' },
+  { suit: '♦', title: 'Board games', note: 'The reason this portfolio is a board.', image: null, alt: '' },
+  { suit: '♣', title: 'Card magic', note: 'Practicing sleight of hand.', image: null, alt: '' },
+  { suit: '♥', title: 'Trying new food', note: 'Always looking for the next place to try.', image: null, alt: '' },
 ]

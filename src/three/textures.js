@@ -285,3 +285,16 @@ export function drawPaper(color, size = 256, alpha = 0.12) {
   grain(ctx, size, size, alpha)
   return c
 }
+
+// A soft round falloff (white, alpha only), used for dust motes and the robber's contact shadow.
+export function drawSoftDot(size = 64, hardness = 0.25) {
+  const c = makeCanvas(size, size)
+  const ctx = c.getContext('2d')
+  const g = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2)
+  g.addColorStop(0, 'rgb(255 255 255 / 1)')
+  g.addColorStop(hardness, 'rgb(255 255 255 / 0.8)')
+  g.addColorStop(1, 'rgb(255 255 255 / 0)')
+  ctx.fillStyle = g
+  ctx.fillRect(0, 0, size, size)
+  return c
+}

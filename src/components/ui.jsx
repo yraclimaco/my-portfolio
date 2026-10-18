@@ -11,6 +11,21 @@ const glyphPaths = {
     </>
   ),
   chevron: <path d="m5.5 8 4.5 4.5L14.5 8" />,
+  check: <path d="m4.5 10.5 3.5 3.5 7.5-8" />,
+  person: (
+    <>
+      <circle cx="10" cy="7" r="3" />
+      <path d="M4 16.5c.8-3 3.2-4.5 6-4.5s5.2 1.5 6 4.5" />
+    </>
+  ),
+  code: <path d="M7.5 6 3.5 10l4 4m5-8 4 4-4 4" />,
+  // A closed game box, for Home.
+  home: (
+    <>
+      <rect x="3" y="7.5" width="14" height="8.5" rx="1.5" />
+      <path d="M2.5 7.5h15l-1-3.5h-13z" />
+    </>
+  ),
   mail: (
     <>
       <rect x="3" y="5" width="14" height="10" rx="2" />

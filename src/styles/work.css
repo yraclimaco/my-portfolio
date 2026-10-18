@@ -1,166 +1,273 @@
-/* ---------- Work collection ---------- */
+/* ---------- Views: gallery and project detail swap in place, briefly ---------- */
 
-.project {
-  padding: clamp(1.75rem, 3.5vw, 2.75rem) 0;
-  border-top: 2px dashed var(--line-strong);
+.view-in {
+  animation: view-in 260ms var(--ease) both;
 }
 
-.project:first-child {
-  border-top: 0;
-  padding-top: 0;
-}
-
-.project__main {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 1.75rem;
-  align-items: center;
-}
-
-@container (min-width: 860px) {
-  .project__main {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
-    gap: clamp(2rem, 4cqi, 3.5rem);
+@keyframes view-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
   }
 }
 
-.project__head {
-  display: flex;
-  align-items: flex-start;
-  gap: 1rem;
+/* ---------- Project gallery: thumbnails first, like browsing videos ---------- */
+
+.pgrid {
+  display: grid;
+  /* Two large thumbnails per row on wide surfaces (4 projects sit as a tidy 2 x 2), one on phones. */
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 24rem), 1fr));
+  gap: clamp(1.25rem, 3vw, 2rem) clamp(1rem, 2.5vw, 1.75rem);
 }
 
-.project__heading {
+.pcard {
   min-width: 0;
 }
 
-.project__meta {
+/* The whole card is one link. Hover and focus lift the thumbnail only, so nothing around it moves. */
+.pcard__link {
+  display: grid;
+  gap: 0.85rem;
+  color: var(--ink);
+  text-decoration: none;
+  border-radius: var(--r-md);
+}
+
+.pcard__link:focus-visible {
+  outline: 3px solid var(--sage-deep);
+  outline-offset: 5px;
+}
+
+.pcard__thumb {
+  position: relative;
+  display: block;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: #fff;
+  border-radius: var(--r-md);
+  box-shadow: 0 0 0 1px var(--line), var(--shadow-soft);
+  transition:
+    transform var(--t-hover) var(--ease),
+    box-shadow var(--t-hover) var(--ease);
+}
+
+.pcard__media {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.pcard__thumb img {
+  width: 100%;
+  height: 100%;
+  transition: transform 400ms var(--ease);
+}
+
+/* Back from a project: a brief ring marks the card you came from. */
+.pcard__link.is-returned .pcard__thumb {
+  animation: card-returned 1400ms var(--ease) both;
+}
+
+@keyframes card-returned {
+  0%,
+  35% {
+    box-shadow:
+      0 0 0 3px var(--sage-dark),
+      var(--shadow-soft);
+  }
+}
+
+/* Title-card images fill the frame; a chart (used only if a project has no card image) is shown whole. */
+.pcard__thumb--contain img {
+  padding: 5% 6%;
+  object-fit: contain;
+}
+
+.pcard__thumb--cover img {
+  object-fit: cover;
+  object-position: 50% 50%;
+}
+
+.pcard__link:hover .pcard__thumb,
+.pcard__link:focus-visible .pcard__thumb {
+  transform: translateY(-3px);
+  box-shadow: 0 0 0 1px var(--line-strong), var(--shadow-lift);
+}
+
+.pcard__link:hover .pcard__thumb img,
+.pcard__link:focus-visible .pcard__thumb img {
+  transform: scale(1.025);
+}
+
+.pcard__badge {
+  position: absolute;
+  left: 0.6rem;
+  bottom: 0.6rem;
+  padding: 0.18rem 0.6rem 0.24rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--paper);
+  background: rgb(59 49 41 / 0.82);
+  border-radius: 6px;
+}
+
+.pcard__body {
+  display: grid;
+  gap: 0.2rem;
+  min-width: 0;
+  padding-inline: 0.15rem;
+}
+
+.pcard__title {
+  font-size: 1.15rem;
+  font-weight: 650;
+  line-height: 1.3;
+}
+
+.pcard__link:hover .pcard__title {
+  color: var(--sage-ink);
+}
+
+.pcard__line {
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.pcard__meta {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--terracotta-ink);
+}
+
+/* ---------- Project detail ---------- */
+
+.pdetail__back {
+  margin-bottom: 1.5rem;
+}
+
+.pdetail__head {
+  max-width: 46rem;
+}
+
+.pdetail__meta {
   font-size: 0.95rem;
   font-weight: 600;
-  color: var(--muted);
+  color: var(--terracotta-ink);
 }
 
-.project__title {
-  margin: 0.1rem 0 0.15rem;
-  font-size: var(--step-3);
-  font-weight: 650;
+.pdetail__head .section__title {
+  margin-top: 0.3rem;
 }
 
-.project__subtitle {
-  font-size: 1.1rem;
+.pdetail__sub {
+  margin-top: 0.5rem;
+  font-size: var(--step-1);
   font-weight: 600;
   line-height: 1.4;
   color: var(--sage-ink);
 }
 
-.project__summary {
-  max-width: 40rem;
-  margin-top: 1rem;
-}
-
-.project__stat {
-  display: grid;
-  justify-items: start;
-  gap: 0.3rem;
-  width: fit-content;
-  max-width: 100%;
-  margin-top: 1.2rem;
-  padding: 1rem 1.25rem;
-  background: linear-gradient(135deg, rgb(242 212 138 / 0.34), rgb(185 205 160 / 0.3));
-  border-radius: var(--r-md);
-}
-
-.project__stat-value {
-  font-size: 2.1rem;
-  font-weight: 650;
-  line-height: 1.05;
-  color: var(--sage-ink);
-  font-variant-numeric: tabular-nums;
-}
-
-.project__stat-label {
-  font-size: 0.98rem;
-  color: var(--muted);
-}
-
-.project__actions {
+.pdetail__links {
   display: flex;
   flex-wrap: wrap;
   gap: 0.6rem;
-  margin-top: 1.3rem;
+  margin-top: 1.4rem;
 }
 
-.project__chevron {
-  transition: rotate var(--t-hover) var(--ease);
+.pdetail__hero {
+  max-width: 46rem;
+  margin-top: clamp(1.75rem, 4vw, 2.5rem);
 }
 
-.project.is-open .project__chevron {
-  rotate: 180deg;
-}
-
-.project__details {
-  display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows 440ms var(--ease-in-out);
-}
-
-.project.is-open .project__details {
-  grid-template-rows: 1fr;
-}
-
-.project__details-inner {
-  min-height: 0;
-  overflow: hidden;
-}
-
-/* ---------- Case study ---------- */
-
-/* Flat on the surface (no nested card): a rule marks where the case study begins. */
-.case {
-  display: grid;
-  gap: 2.25rem;
+.pdetail__toc {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.4rem;
   margin-top: 2rem;
-  padding-top: 2rem;
-  border-top: 1px solid var(--line-strong);
+  padding: 0.35rem;
+  background: var(--cream);
+  border-radius: 999px;
+  width: fit-content;
+  max-width: 100%;
 }
 
-.case__h {
-  margin-bottom: 0.6rem;
+.pdetail__toc a {
+  display: inline-flex;
+  overflow-wrap: anywhere;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 0.95rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--ink);
+  text-decoration: none;
+  border-radius: 999px;
+  transition: background-color var(--t-hover) var(--ease);
+}
+
+.pdetail__toc a:hover {
+  background: var(--paper);
+}
+
+.pdetail__body {
+  display: grid;
+  /* minmax(0, 1fr): wide children (the comparison table) scroll inside their frame
+     instead of stretching the column past the screen. */
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(2.25rem, 5vw, 3rem);
+  margin-top: clamp(2rem, 4vw, 2.75rem);
+}
+
+.pblock {
+  min-width: 0;
+  max-width: 46rem;
+  scroll-margin-top: 1rem;
+}
+
+.pblock--wide {
+  max-width: none;
+}
+
+.pblock h2 {
+  margin-bottom: 0.8rem;
+  font-size: var(--step-2);
+  font-weight: 650;
+  line-height: 1.25;
+}
+
+.pblock h2:focus {
+  outline: none;
+}
+
+.pblock h3 {
+  margin: 1.75rem 0 0.6rem;
   font-size: 1.05rem;
   font-weight: 650;
   color: var(--terracotta-ink);
 }
 
-.case__question p {
-  max-width: 52rem;
-  font-size: var(--step-2);
-  font-weight: 600;
-  line-height: 1.4;
+.pblock__lead {
+  font-size: var(--step-1);
+  line-height: 1.5;
 }
 
-.case__cols {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 2.25rem;
-}
-
-@container (min-width: 820px) {
-  .case__cols {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: clamp(2rem, 4cqi, 3.5rem);
-  }
-}
-
-.case__col {
-  display: grid;
-  align-content: start;
-  gap: 2rem;
-}
-
-.case__note {
-  margin-bottom: 0.55rem;
+.pblock__note {
+  margin-bottom: 0.6rem;
   color: var(--muted);
 }
+
+.pdetail__foot {
+  margin-top: clamp(2.5rem, 5vw, 3.5rem);
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--line);
+}
+
+.pdetail__foot .pdetail__back {
+  margin: 0;
+}
+
+/* ---------- Steps, findings, tables ---------- */
 
 .steps {
   display: grid;
@@ -188,37 +295,68 @@
   font-weight: 650;
 }
 
-.findings + .findings {
-  margin-top: 1.5rem;
-}
-
-.findings dl {
-  margin-top: 0.6rem;
-}
-
-.finding {
+/* Results: prominent numbers, each with its context and evidence type. */
+.results {
   display: grid;
-  grid-template-columns: minmax(6.5rem, 8rem) minmax(0, 1fr);
-  gap: 1rem;
-  padding: 0.8rem 0;
-  border-top: 1px solid var(--line);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  gap: 0.85rem;
+  margin: 0;
 }
 
-.finding dt {
-  font-size: 1.45rem;
+.result {
+  position: relative;
+  min-width: 0;
+  padding: 1.1rem 1.2rem 1.2rem;
+  overflow: hidden;
+  background: var(--cream);
+  border-radius: var(--r-md);
+}
+
+/* The accent that draws in as the result appears. */
+.result__bar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  height: 4px;
+  background: var(--sage-dark);
+  transform-origin: 0 50%;
+}
+
+.result--model .result__bar {
+  background: var(--terracotta);
+}
+
+.result dt {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: start;
+  gap: 0.5rem;
+}
+
+.result__stat {
+  font-size: clamp(1.6rem, 1.3rem + 1vw, 2.1rem);
   font-weight: 650;
-  line-height: 1.15;
+  line-height: 1.1;
   color: var(--sage-ink);
   font-variant-numeric: tabular-nums;
   overflow-wrap: anywhere;
 }
 
-.findings--model dt {
+.result--model .result__stat {
   color: var(--terracotta-ink);
 }
 
-.finding dd {
-  margin: 0;
+.result dd {
+  margin: 0.55rem 0 0;
+  font-size: 0.98rem;
+  line-height: 1.5;
+}
+
+.impact-row {
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
 }
 
 .impact {
@@ -227,7 +365,7 @@
 }
 
 .table-wrap {
-  margin-top: 1.4rem;
+  margin-top: 1.5rem;
   overflow-x: auto;
   background: var(--paper);
   border-radius: var(--r-md);
@@ -301,12 +439,13 @@
 
 .figure__frame img {
   width: 100%;
+  height: auto;
   border-radius: 8px;
 }
 
 .figure__frame:hover,
 .figure__frame:focus-visible {
-  transform: translateY(-3px) rotate(-0.3deg);
+  transform: translateY(-3px);
   box-shadow: var(--shadow-lift), 0 0 0 1px var(--line);
 }
 
@@ -338,6 +477,7 @@
 }
 
 .figure figcaption {
+  max-width: 46rem;
   margin-top: 0.75rem;
   font-size: 0.95rem;
   line-height: 1.5;
@@ -351,15 +491,9 @@
   align-items: start;
 }
 
-@container (max-width: 480px) {
-  .finding {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 0.2rem;
-  }
 
-  .token {
-    width: 44px;
-    height: 44px;
-    font-size: 1.05rem;
-  }
+.result .evidence {
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }

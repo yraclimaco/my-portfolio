@@ -1,0 +1,304 @@
+/* ---------- The 3D world: one scene from the closed box to the board ---------- */
+
+/* The scene sets these as the environment shifts from the dark table to the calm board.
+   The per-phase defaults avoid a flash before the scene has loaded. */
+.world3d {
+  --bg-c: #4b4433;
+  --bg-m: #1f2d2a;
+  --bg-e: #0f1817;
+  --pool-x: 50%;
+  --pool-y: 56%;
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  background: radial-gradient(circle at var(--pool-x) var(--pool-y), var(--bg-c) 0, var(--bg-m) 34vmax, var(--bg-e) 95vmax);
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.world3d.is-board {
+  --bg-c: #e2eae5;
+  --bg-m: #cfdcd7;
+  --bg-e: #bdcdc9;
+}
+
+/* A whisper of grain so the dark reads as a surface, not a void. */
+.world3d::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: var(--paper-grain);
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.world3d__scene {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 700ms var(--ease);
+}
+
+.world3d.is-ready .world3d__scene {
+  opacity: 1;
+}
+
+.world3d__scene canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+
+/* ---------- Destination labels, anchored to the 3D tiles ---------- */
+
+.world3d__board {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 420ms var(--ease) 60ms;
+}
+
+.world3d.is-board.is-ready .world3d__board {
+  opacity: 1;
+}
+
+.dest3d {
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--ink);
+  text-decoration: none;
+  pointer-events: auto;
+  will-change: transform;
+}
+
+.dest3d:focus-visible {
+  outline: none;
+}
+
+.dest3d .dest__plaque {
+  left: 0;
+  top: 0;
+  max-width: none;
+  padding: 0.38rem 1rem 0.46rem;
+}
+
+.dest3d .dest__label {
+  font-size: clamp(1rem, 0.92rem + 0.4vw, 1.3rem);
+}
+
+.dest3d[data-hot] .dest__plaque {
+  transform: translate(-50%, calc(-50% - 4px));
+  background: #fffdf7;
+  box-shadow: var(--press), var(--shadow-lift);
+}
+
+.dest3d[data-target] .dest__plaque {
+  box-shadow:
+    0 0 0 2px rgb(255 252 244 / 0.95),
+    var(--press),
+    var(--shadow-soft);
+}
+
+.dest3d:focus-visible .dest__plaque {
+  outline: 3px solid var(--sage-deep);
+  outline-offset: 3px;
+}
+
+.dest3d.is-active .dest__plaque {
+  background: #fffdf7;
+  box-shadow:
+    0 0 0 3px rgb(79 110 81 / 0.35),
+    var(--shadow-lift);
+}
+
+.hint3d {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transition: opacity var(--t-hover) var(--ease);
+}
+
+.hint3d span {
+  display: block;
+  padding: 0.3rem 0.85rem 0.35rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--paper);
+  background: rgb(59 49 41 / 0.78);
+  border-radius: 999px;
+  transform: translate(-50%, -50%);
+}
+
+.hint3d.is-away {
+  opacity: 0;
+}
+
+@media (max-width: 599px) {
+  .dest3d .dest__sub {
+    display: none;
+  }
+
+  .dest3d .dest__plaque {
+    padding: 0.32rem 0.8rem 0.38rem;
+  }
+
+  .dest3d .dest__label {
+    font-size: 1rem;
+  }
+}
+
+/* ---------- The intro: name, box and one action, composed down the centre ---------- */
+
+.world-intro {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  justify-items: center;
+  padding: clamp(3.5rem, 10vh, 6.5rem) var(--gutter) clamp(1.75rem, 6vh, 3.5rem);
+  text-align: center;
+  color: #f4ecdc;
+  pointer-events: none;
+}
+
+.world-intro > * {
+  pointer-events: auto;
+}
+
+.world-intro__title {
+  grid-row: 1;
+  max-width: 48rem;
+}
+
+.world-intro__title h1 {
+  font-size: clamp(3.25rem, 1.7rem + 5.2vw, 6.5rem);
+  font-weight: 650;
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+  color: #f7f0e2;
+}
+
+.world-intro__title p {
+  margin-top: 0.6rem;
+  font-size: clamp(1.05rem, 1rem + 0.3vw, 1.3rem);
+  font-weight: 500;
+  color: rgb(244 236 220 / 0.74);
+}
+
+.world-intro__actions {
+  grid-row: 3;
+  display: grid;
+  justify-items: center;
+  gap: 1.1rem;
+}
+
+.btn--lamp {
+  min-width: 13rem;
+  color: var(--ink);
+  background: #f3e6c9;
+  box-shadow:
+    0 0 0 1px rgb(255 240 210 / 0.35),
+    0 12px 32px -12px rgb(255 196 120 / 0.5);
+}
+
+.btn--lamp:hover {
+  background: #f8edd5;
+  box-shadow:
+    0 0 0 1px rgb(255 240 210 / 0.5),
+    0 14px 36px -12px rgb(255 196 120 / 0.65);
+}
+
+.btn--lamp:focus-visible,
+.world-intro__links a:focus-visible {
+  outline: 2px solid #f3e6c9;
+  outline-offset: 3px;
+}
+
+.world-intro__links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.4rem 1.6rem;
+  font-size: 0.98rem;
+  font-weight: 500;
+}
+
+.world-intro__links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  min-height: 32px;
+  color: rgb(244 236 220 / 0.8);
+  text-decoration: underline;
+  text-decoration-color: rgb(244 236 220 / 0.3);
+  text-underline-offset: 4px;
+  transition:
+    color var(--t-hover) var(--ease),
+    text-decoration-color var(--t-hover) var(--ease);
+}
+
+.world-intro__links a:hover {
+  color: #f7f0e2;
+  text-decoration-color: rgb(244 236 220 / 0.7);
+}
+
+.world-intro__skip {
+  position: absolute;
+  top: clamp(0.75rem, 2vh, 1.25rem);
+  right: clamp(0.75rem, 2vw, 1.5rem);
+}
+
+.world-intro__skip .box-skip {
+  position: static;
+  color: rgb(244 236 220 / 0.78);
+  background: transparent;
+  box-shadow: 0 0 0 1px rgb(244 236 220 / 0.22);
+}
+
+.world-intro__skip .box-skip:hover {
+  color: #f7f0e2;
+  background: rgb(244 236 220 / 0.08);
+  box-shadow: 0 0 0 1px rgb(244 236 220 / 0.4);
+}
+
+.world-intro__skip .box-skip:focus-visible {
+  outline-color: #f3e6c9;
+}
+
+.world3d.is-opening .world-intro {
+  pointer-events: none;
+}
+
+.world3d.is-opening .world-intro > * {
+  pointer-events: none;
+}
+
+@media (max-width: 599px) {
+  .world-intro {
+    padding-top: clamp(3.75rem, 11vh, 5rem);
+  }
+}
+
+/* ---------- Header over the world: no backing, just type that suits the board ---------- */
+
+.header-wrap {
+  transition: opacity 500ms var(--ease) 150ms;
+}
+
+.header-wrap.is-intro {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.world-intro__title h1:focus {
+  outline: none;
+}

@@ -12,8 +12,11 @@ export function BoxActions({ onOpen, actionsRef, className = '' }) {
       <button type="button" className="btn btn--primary" onClick={onOpen}>
         Open portfolio
       </button>
-      <Link className="btn btn--soft" to="/work">
-        View work
+      <Link className="btn btn--soft" to="/projects">
+        View projects
+      </Link>
+      <Link className="btn btn--soft" to="/contact">
+        Contact
       </Link>
       <a className="btn btn--soft" href={profile.resume} target="_blank" rel="noopener">
         Résumé

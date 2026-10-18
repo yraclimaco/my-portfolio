@@ -12,7 +12,7 @@ export default function NotFound() {
         <p className="section__lead">That space isn’t on this board. The link may have moved or been mistyped.</p>
       </header>
       <p>
-        Try <Link to="/work">Work</Link>, <Link to="/experience">Experience</Link>, or head back to the board.
+        Try <Link to="/projects">Projects</Link>, <Link to="/experience">Experience</Link>, or head back to the board.
       </p>
     </div>
   )

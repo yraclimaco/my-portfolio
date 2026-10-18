@@ -3,6 +3,7 @@ import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { Glyph } from './ui'
 import { destinationFor, destinations } from '../content/board'
 import { profile } from '../content/profile'
+import { useGoHome } from '../lib/home'
 
 const EXIT_MS = 300
 const FOCUSABLE = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"]), input, select, textarea'
@@ -12,6 +13,7 @@ export default function Panel({ phase, section, wide, onExited, children }) {
   const ref = useRef(null)
   const scrollRef = useRef(null)
   const navigate = useNavigate()
+  const goHome = useGoHome()
   const dest = destinationFor(section)
 
   // Grow out of the destination tile: use its on-screen position as the transform origin.
@@ -84,6 +86,11 @@ export default function Panel({ phase, section, wide, onExited, children }) {
             <Glyph name="back" size={18} />
             Back to board
           </Link>
+          <button type="button" className="panel__home" onClick={goHome}>
+            <Glyph name="home" size={17} />
+            Home
+            <span className="sr-only">: back to the game box</span>
+          </button>
           <nav className="panel__tabs" aria-label="Sections">
             {destinations.map((d) => (
               <NavLink key={d.id} to={d.to} className={`panel__tab panel__tab--${d.terrain}`}>

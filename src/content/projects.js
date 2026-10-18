@@ -7,6 +7,8 @@
 export const projects = [
   {
     slug: 'surfcast',
+    // Gallery card image (title card); the project's own screenshots and charts stay in the detail view.
+    thumb: { src: '/work/surfcast/thumb.webp', width: 960, height: 540 },
     number: '01',
     featured: true,
     tile: { label: 'SurfCast', sub: 'Surf forecasting' },
@@ -89,6 +91,8 @@ export const projects = [
   },
   {
     slug: 'lol-snowball',
+    // Gallery card image (title card); the project's own screenshots and charts stay in the detail view.
+    thumb: { src: '/work/lol/thumb.webp', width: 960, height: 540 },
     number: '02',
     featured: true,
     tile: { label: 'Snowball', sub: 'Esports analytics' },
@@ -174,6 +178,8 @@ export const projects = [
   },
   {
     slug: 'tubescope',
+    // Gallery card image (title card); the project's own screenshots and charts stay in the detail view.
+    thumb: { src: '/work/tubescope/thumb.webp', width: 960, height: 540 },
     number: '03',
     featured: true,
     tile: { label: 'TubeScope', sub: 'Trend prediction' },
@@ -257,6 +263,8 @@ export const projects = [
   },
   {
     slug: 'adcc',
+    // Gallery card image (title card); the project's own screenshots and charts stay in the detail view.
+    thumb: { src: '/work/adcc/thumb.webp', width: 718, height: 404 },
     number: '04',
     featured: false,
     tile: { label: 'ADCC', sub: 'Grappling analysis' },

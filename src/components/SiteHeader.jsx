@@ -3,13 +3,33 @@ import { Link, NavLink, useLocation } from 'react-router-dom'
 import Robber from './Robber'
 import { Glyph } from './ui'
 import { profile } from '../content/profile'
+import { useGoHome } from '../lib/home'
 
 const links = [
-  { to: '/work', label: 'Work' },
+  { to: '/projects', label: 'Projects' },
   { to: '/experience', label: 'Experience' },
   { to: '/about', label: 'About' },
   { to: '/contact', label: 'Contact' },
 ]
+
+// Home returns to the closed game box (not just the board), so it is a button, not a link.
+function HomeButton({ className = '', onDone }) {
+  const goHome = useGoHome()
+  return (
+    <button
+      type="button"
+      className={`nav-link nav-link--home ${className}`}
+      onClick={() => {
+        onDone?.()
+        goHome()
+      }}
+    >
+      <Glyph name="home" size={16} />
+      Home
+      <span className="sr-only">: back to the game box</span>
+    </button>
+  )
+}
 
 function ResumeLink({ className = '' }) {
   return (
@@ -65,6 +85,9 @@ export default function SiteHeader() {
 
         <nav className="site-nav" aria-label="Primary">
           <ul className="site-nav__list">
+            <li>
+              <HomeButton />
+            </li>
             {links.map((l) => (
               <li key={l.to}>
                 <NavLink to={l.to} className="nav-link">
@@ -99,6 +122,9 @@ export default function SiteHeader() {
 
       <nav id="mobile-nav" className="mobile-nav" aria-label="Primary" ref={panelRef} hidden={!open}>
         <ul className="mobile-nav__list">
+          <li>
+            <HomeButton onDone={() => setOpen(false)} />
+          </li>
           {links.map((l) => (
             <li key={l.to}>
               <NavLink to={l.to} className="nav-link" onClick={() => setOpen(false)}>

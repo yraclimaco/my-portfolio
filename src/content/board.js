@@ -6,7 +6,7 @@ export const DIRS = { E: [1, 0], NE: [1, -1], NW: [0, -1], W: [-1, 0], SW: [-1, 
 
 // Listed in navigation order, which is also the keyboard order on the board.
 export const destinations = [
-  { id: 'work', label: 'Work', sub: 'Four projects', to: '/work', at: 'NW', terrain: 'wheat' },
+  { id: 'work', label: 'Projects', sub: 'Four projects', to: '/projects', at: 'NW', terrain: 'wheat' },
   { id: 'experience', label: 'Experience', sub: 'Three roles', to: '/experience', at: 'NE', terrain: 'hills' },
   { id: 'about', label: 'About', sub: 'Profile & interests', to: '/about', at: 'SW', terrain: 'pasture' },
   { id: 'contact', label: 'Contact', sub: 'Email & links', to: '/contact', at: 'SE', terrain: 'forest' },
@@ -55,7 +55,8 @@ export function sectionFor(pathname) {
   const path = pathname.replace(/\/+$/, '') || '/'
   if (path === '/') return null
   const [, first, second, third] = path.split('/')
-  if (first === 'work' && !third) return 'work'
+  // Projects live at /projects (older /work links redirect there).
+  if ((first === 'projects' || first === 'work') && !third) return 'work'
   if (sections.includes(first) && !second) return first
   return 'notfound'
 }

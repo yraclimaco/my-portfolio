@@ -5,10 +5,8 @@
   right: 0;
   z-index: 30;
   height: var(--header-h);
-  background: rgb(247 240 227 / 0.88);
-  backdrop-filter: blur(12px) saturate(1.1);
-  -webkit-backdrop-filter: blur(12px) saturate(1.1);
-  box-shadow: 0 1px 0 rgb(59 49 41 / 0.06), 0 8px 24px -18px rgb(59 49 41 / 0.4);
+  /* No backing: the board's calm daylight sits behind it, and ink reads clearly on it. */
+  background: transparent;
 }
 
 .site-header__inner {
@@ -193,4 +191,28 @@
   .brand__robber {
     display: none;
   }
+}
+
+/* Home is a button (it closes the box), styled like the other links. */
+.nav-link--home {
+  font: inherit;
+  font-weight: 600;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.nav-link--home .glyph {
+  margin-top: -1px;
+}
+
+.mobile-nav .nav-link--home {
+  justify-content: flex-start;
+  text-align: left;
+}
+
+.nav-link:focus-visible,
+.menu-button:focus-visible {
+  outline: 3px solid var(--sage-deep);
+  outline-offset: 2px;
 }

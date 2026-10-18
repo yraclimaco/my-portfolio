@@ -5,7 +5,7 @@ export const profile = {
   focus: 'Product analytics & data science',
   audienceLine: 'Gaming, streaming & entertainment',
   intro:
-    'Data Science student at UC San Diego focused on product analytics for B2C consumer tech. I turn raw behavioral and product data into insights that can inform decisions, using statistical testing, modeling, and clear communication.',
+    'I’m a Data Science student at UC San Diego who’s curious about people, the choices they make, and the products they love. I enjoy turning that curiosity into projects, learning alongside others, and finding useful patterns in messy data. My goal is to bring data and an understanding of people together to help build better everyday experiences.',
   email: 'climacoyra@gmail.com',
   linkedin: 'https://www.linkedin.com/in/yra-climaco',
   github: 'https://github.com/yraclimaco',

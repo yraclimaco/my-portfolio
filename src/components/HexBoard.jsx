@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import gsap from 'gsap'
 import Robber from './Robber'
 import TerrainDefs from './TerrainDefs'
-import { Glyph } from './ui'
 import { HOME, destinations, islandTiles } from '../content/board'
 import { DEST_GLYPH_OPACITY, glyphFor, glyphInk } from '../content/terrain'
 import { profile } from '../content/profile'
@@ -14,24 +13,13 @@ const ZOOM = 1.05
 
 const island = new Map(islandTiles().map((t) => [`${t.q},${t.r}`, t]))
 
-function computeLayout(W, H, introH) {
-  const side = W >= 1000 && W / H >= 1.15
-  let s, cx, cy
-  if (side) {
-    const left = clamp(W * 0.34, 360, 520)
-    const mapW = W - left
-    s = Math.min((mapW * 0.92) / (5 * SQRT3), (H * 0.9) / 8, 122)
-    cx = left + mapW / 2
-    cy = H / 2
-  } else {
-    const top = introH
-    const mapH = Math.max(H - top, 240)
-    const ringOne = Math.min((W * 0.92) / (3 * SQRT3), (mapH * 0.86) / 5)
-    const ringTwo = Math.min((W * 0.92) / (5 * SQRT3), (mapH * 0.92) / 8)
-    s = Math.min(ringOne, Math.max(ringTwo, 64), 112)
-    cx = W / 2
-    cy = top + mapH / 2
-  }
+// The island, centred under the header (the name lives in the header, not over the board).
+function computeLayout(W, H) {
+  const ringOne = Math.min((W * 0.92) / (3 * SQRT3), (H * 0.86) / 5)
+  const ringTwo = Math.min((W * 0.92) / (5 * SQRT3), (H * 0.9) / 8)
+  const s = Math.min(ringOne, Math.max(ringTwo, 64), 122)
+  const cx = W / 2
+  const cy = H / 2
 
   // Cover the stage (plus room to pan when a panel is docked) with sea and land.
   const margin = Math.min(Math.max(W, H) * 0.45, 640) + s * 2
@@ -57,7 +45,7 @@ function computeLayout(W, H, introH) {
   }
   dests[HOME] = { x: cx, y: cy, rest: { x: cx, y: cy + s * 0.22 } }
 
-  return { W, H, s, cx, cy, side, hexes, dests }
+  return { W, H, s, cx, cy, hexes, dests }
 }
 
 const Tile = memo(function Tile({ hex, paths, state }) {
@@ -90,7 +78,6 @@ const Tile = memo(function Tile({ hex, paths, state }) {
 
 export default function HexBoard({ robber, focusDest, panelOpen, reduced, onDrop, revealKey }) {
   const stageRef = useRef(null)
-  const introRef = useRef(null)
   const robberRef = useRef(null)
   const liftRef = useRef(null)
   const shadowRef = useRef(null)
@@ -108,27 +95,19 @@ export default function HexBoard({ robber, focusDest, panelOpen, reduced, onDrop
   const [pulse, setPulse] = useState(false)
   const [revealing, setRevealing] = useState(false)
 
-  // Measure the stage and (for stacked layouts) the intro height.
+  // Measure the stage.
   useLayoutEffect(() => {
     const measure = () => {
       const r = stageRef.current.getBoundingClientRect()
-      const introH = introRef.current?.offsetHeight ?? 0
-      setSize((prev) =>
-        prev && prev.W === Math.round(r.width) && prev.H === Math.round(r.height) && prev.introH === introH
-          ? prev
-          : { W: Math.round(r.width), H: Math.round(r.height), introH },
-      )
+      setSize((prev) => (prev && prev.W === Math.round(r.width) && prev.H === Math.round(r.height) ? prev : { W: Math.round(r.width), H: Math.round(r.height) }))
     }
     measure()
     const ro = new ResizeObserver(measure)
     ro.observe(stageRef.current)
-    if (introRef.current) ro.observe(introRef.current)
-    document.fonts?.ready.then(measure)
     return () => ro.disconnect()
   }, [])
 
-  const layout = useMemo(() => (size ? computeLayout(size.W, size.H, size.introH) : null), [size])
-  const side = size ? size.W >= 1000 && size.W / size.H >= 1.15 : true
+  const layout = useMemo(() => (size ? computeLayout(size.W, size.H) : null), [size])
 
   const paths = useMemo(() => {
     if (!layout) return null
@@ -344,15 +323,12 @@ export default function HexBoard({ robber, focusDest, panelOpen, reduced, onDrop
   const land = layout?.hexes.filter((h) => h.d <= 2) ?? []
   const sea = layout?.hexes.filter((h) => h.d > 2) ?? []
   const worldStyle = { transform: `translate(${transform.tx}px, ${transform.ty}px) scale(${transform.k})` }
-  const introHidden = panelOpen
 
   return (
     <div
       ref={stageRef}
       className={`stage${dragging ? ' is-dragging' : ''}${revealing ? ' is-revealing' : ''}${reduced ? ' is-reduced' : ''}${layout && layout.s < 86 ? ' is-compact' : ''}`}
       style={layout ? { '--s': `${layout.s}px`, '--robber-h': `${robberH}px` } : undefined}
-      /* Where the island sits, so the box intro can land its camera exactly on it. */
-      data-island={layout ? `${layout.cx.toFixed(1)} ${layout.cy.toFixed(1)} ${layout.s.toFixed(2)}` : undefined}
     >
       <div className="world" style={worldStyle}>
         {layout && (
@@ -396,7 +372,6 @@ export default function HexBoard({ robber, focusDest, panelOpen, reduced, onDrop
                   >
                     <span className="dest__plaque">
                       <span className="dest__label">{d.label}</span>
-                      <span className="dest__sub">{d.sub}</span>
                     </span>
                   </Link>
                 </li>
@@ -428,23 +403,9 @@ export default function HexBoard({ robber, focusDest, panelOpen, reduced, onDrop
         </div>
       </div>
 
-      <div ref={introRef} className={`intro intro--${side ? 'side' : 'stack'}${introHidden ? ' is-hidden' : ''}`} inert={introHidden}>
-        <p className="intro__eyebrow">{profile.audienceLine}</p>
-        <h1 id="board-title" className="intro__title" tabIndex={-1}>
-          {profile.name}
-        </h1>
-        <p className="intro__focus">{profile.focus}</p>
-        <p className="intro__text">{profile.intro}</p>
-        <div className="intro__actions">
-          <a className="btn btn--primary" href={profile.resume} target="_blank" rel="noopener">
-            Résumé <Glyph name="external" size={15} />
-            <span className="sr-only">(PDF, opens in a new tab)</span>
-          </a>
-          <a className="btn btn--soft" href={`mailto:${profile.email}`}>
-            <Glyph name="mail" size={16} /> Email me
-          </a>
-        </div>
-      </div>
+      <h1 id="board-title" className="sr-only" tabIndex={-1}>
+        {profile.name}: choose a destination, or drag the robber onto one
+      </h1>
     </div>
   )
 }

@@ -30,10 +30,6 @@
   animation: reveal-up 520ms var(--ease) 80ms both;
 }
 
-.stage.is-revealing .intro {
-  animation: reveal-fade 600ms var(--ease) both;
-}
-
 @keyframes reveal-up {
   from {
     opacity: 0;
@@ -41,11 +37,6 @@
   }
 }
 
-@keyframes reveal-fade {
-  from {
-    opacity: 0;
-  }
-}
 
 .world {
   position: absolute;
@@ -272,105 +263,5 @@
   from {
     opacity: 0;
     transform: translate(-50%, -30%);
-  }
-}
-
-/* ---------- Intro ---------- */
-
-.intro {
-  position: absolute;
-  z-index: 4;
-  transition:
-    opacity var(--t-section) var(--ease),
-    translate var(--t-section) var(--ease);
-}
-
-.intro.is-hidden {
-  opacity: 0;
-  translate: -14px 0;
-}
-
-.intro--side {
-  left: clamp(1.5rem, 4vw, 3.5rem);
-  top: 50%;
-  width: calc(clamp(360px, 34vw, 520px) - clamp(2.5rem, 6vw, 4.5rem));
-  transform: translateY(-50%);
-}
-
-/* A soft wash of cream behind the intro so text reads over the sea. */
-.intro--side::before {
-  content: '';
-  position: absolute;
-  inset: -45% -30% -45% -70%;
-  z-index: -1;
-  background: radial-gradient(closest-side, rgb(247 240 227 / 0.96), rgb(247 240 227 / 0.86) 55%, rgb(247 240 227 / 0));
-  pointer-events: none;
-}
-
-.intro--stack {
-  top: 0;
-  left: 0;
-  right: 0;
-  padding: 1rem var(--gutter) 1.4rem;
-  text-align: center;
-  background: linear-gradient(to bottom, rgb(247 240 227 / 0.97) 0%, rgb(247 240 227 / 0.9) 72%, rgb(247 240 227 / 0));
-}
-
-.intro__eyebrow {
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--terracotta-ink);
-}
-
-.intro__title {
-  margin: 0.2rem 0 0.3rem;
-  font-size: clamp(2.3rem, 1.4rem + 2.8vw, 3.7rem);
-  font-weight: 700;
-  line-height: 1.02;
-  letter-spacing: -0.025em;
-}
-
-.intro__focus {
-  font-size: clamp(1.15rem, 1rem + 0.4vw, 1.4rem);
-  font-weight: 600;
-  color: var(--sage-ink);
-}
-
-.intro__text {
-  max-width: 40ch;
-  margin-top: 0.9rem;
-  font-size: 1.04rem;
-  line-height: 1.6;
-  color: var(--muted);
-}
-
-.intro__actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.6rem;
-  margin-top: 1.3rem;
-}
-
-.intro--stack .intro__title {
-  font-size: clamp(2rem, 1.5rem + 2vw, 2.7rem);
-}
-
-.intro--stack .intro__text {
-  margin-inline: auto;
-}
-
-.intro--stack .intro__actions {
-  justify-content: center;
-}
-
-@media (max-width: 599px) {
-  .intro--stack {
-    padding-top: 0.75rem;
-  }
-
-  .intro--stack .intro__eyebrow,
-  .intro--stack .intro__text,
-  .intro--stack .intro__actions {
-    display: none;
   }
 }
