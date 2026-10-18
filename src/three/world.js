@@ -431,7 +431,7 @@ export async function createWorld({
   const boxCorners = []
   for (const sx of [-1, 1]) for (const sz of [-1, 1]) for (const y of [0, LID_CLOSED_Y + LID.h]) boxCorners.push(new Vector3((sx * COVER.w) / 2, y, (sz * COVER.d) / 2))
   // Framing hulls: the whole island, or (on phones) the destinations ring with a generous margin,
-  // letting the outer ring run off the sides so the four destinations stay large.
+  // letting the outer ring run off the sides so the destinations stay large.
   const hull = (maxRing, radius) => {
     const pts = []
     for (const t of tiles) {

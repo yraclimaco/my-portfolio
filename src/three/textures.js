@@ -165,8 +165,8 @@ export function drawLid(w, h) {
   // Landscape: art on the left, title on the right. Portrait: art above, title centred below.
   const portrait = h > w
   const L = portrait
-    ? { ax: w * 0.5, ay: u * 49, as: u * 5.6, tx: w * 0.5, align: 'center', maxW: u * 84, k: 1.45, y0: u * 88, oneLine: true }
-    : { ax: w * 0.27, ay: h * 0.5, as: u * 3.6, tx: w * 0.53, align: 'left', maxW: w * 0.39, k: 1, y0: h * 0.33, oneLine: false }
+    ? { ax: w * 0.5, ay: u * 49, as: u * 5.6, tx: w * 0.5, align: 'center', maxW: u * 84, k: 1.45, y0: u * 92.6, oneLine: true }
+    : { ax: w * 0.27, ay: h * 0.5, as: u * 3.6, tx: w * 0.53, align: 'left', maxW: w * 0.39, k: 1, y0: h * 0.365, oneLine: false }
 
   // Artwork: the island in a sea medallion.
   const { ax, ay, as } = L
@@ -205,7 +205,7 @@ export function drawLid(w, h) {
   }
   ctx.textBaseline = 'alphabetic'
   ctx.textAlign = L.align
-  line('A portfolio in four destinations', 600, u * 2.15, tx, y0, '#fbf0d2')
+  line('A portfolio in six destinations', 600, u * 2.15, tx, y0, '#fbf0d2')
 
   const nx = portrait ? tx : tx - u * 0.3
   ctx.save()
@@ -221,19 +221,6 @@ export function drawLid(w, h) {
 
   const shift = L.oneLine ? -7.2 : 0
   line(profile.focus, 600, u * 2.6, tx, at(20.6 + shift), '#fdf8ee')
-
-  ctx.save()
-  ctx.strokeStyle = 'rgb(253 248 238 / 0.32)'
-  ctx.lineWidth = u * 0.28
-  ctx.setLineDash([u * 0.9, u * 0.7])
-  ctx.beginPath()
-  const [d0, d1] = portrait ? [w * 0.25, w * 0.75] : [tx, w - u * 8]
-  ctx.moveTo(d0, at(23.4 + shift))
-  ctx.lineTo(d1, at(23.4 + shift))
-  ctx.stroke()
-  ctx.restore()
-
-  line(profile.audienceLine, 600, u * 2.15, tx, at(26.9 + shift), '#fbf0d2')
 
   grain(ctx, w, h, 0.09)
   return c

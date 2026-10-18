@@ -142,12 +142,11 @@ export default function BoxFallback({ onOpened, reducedMotion }) {
             <div className="game-box__print">
               <LidArt />
               <div className="game-box__title-block">
-                <p className="game-box__kicker">A portfolio in four destinations</p>
+                <p className="game-box__kicker">A portfolio in six destinations</p>
                 <h1 id="box-title" className="game-box__title">
                   {profile.name}
                 </h1>
                 <p className="game-box__subtitle">{profile.focus}</p>
-                <p className="game-box__audience">{profile.audienceLine}</p>
               </div>
             </div>
           </div>
