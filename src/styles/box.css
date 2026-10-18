@@ -1,0 +1,324 @@
+/* ---------- Static fallback: the printed box over the (blurred) board ---------- */
+
+.box-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: 2rem var(--gutter);
+  overflow-y: auto;
+  background: rgb(247 240 227 / 0.78);
+  backdrop-filter: blur(10px) saturate(0.95);
+  -webkit-backdrop-filter: blur(10px) saturate(0.95);
+}
+
+.box-intro.is-opening {
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.box-intro__stage {
+  display: grid;
+  justify-items: center;
+  gap: clamp(1.75rem, 4vh, 2.5rem);
+  width: 100%;
+}
+
+.game-box {
+  position: relative;
+  width: min(640px, 100%);
+  aspect-ratio: 1.42;
+}
+
+/* A sage-green lid with a cream inset label, like a well-loved board game. */
+.game-box__lid {
+  position: absolute;
+  inset: 0;
+  color: var(--paper);
+  /* Darkest tone (#527455) still gives cream text ≥ 4.6:1 contrast. */
+  background:
+    radial-gradient(70% 60% at 22% 20%, rgb(255 255 255 / 0.08) 0%, rgb(255 255 255 / 0) 70%),
+    radial-gradient(120% 120% at 85% 100%, rgb(40 52 38 / 0.18) 0%, rgb(40 52 38 / 0) 60%),
+    var(--paper-grain),
+    linear-gradient(160deg, #527455, #4c6c4f 55%, #45634a);
+  border-radius: 26px;
+  box-shadow:
+    inset 0 2px 0 rgb(255 255 255 / 0.12),
+    0 10px 0 -2px #3f5a41,
+    0 32px 60px -24px rgb(44 62 66 / 0.55);
+  transform-origin: 50% 60%;
+  transition:
+    transform var(--t-hover) var(--ease),
+    box-shadow var(--t-hover) var(--ease);
+  will-change: transform, opacity;
+}
+
+.game-box:hover .game-box__lid {
+  transform: translateY(-3px) rotate(-0.4deg);
+  box-shadow:
+    inset 0 2px 0 rgb(255 255 255 / 0.12),
+    0 12px 0 -2px #3f5a41,
+    0 40px 66px -24px rgb(44 62 66 / 0.58);
+}
+
+.game-box__hit {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  cursor: pointer;
+  border-radius: inherit;
+}
+
+.game-box__print {
+  position: absolute;
+  inset: 16px;
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  align-items: center;
+  gap: clamp(1rem, 3vw, 2rem);
+  padding: clamp(1rem, 3vw, 2rem);
+  border: 2px dashed rgb(253 248 238 / 0.35);
+  border-radius: 18px;
+}
+
+.lid-art {
+  width: 100%;
+  max-width: 250px;
+  justify-self: center;
+  filter: drop-shadow(0 8px 12px rgb(30 40 28 / 0.22));
+}
+
+.game-box__title-block {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.game-box__kicker {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fbf0d2;
+}
+
+.game-box__title {
+  font-size: clamp(2.3rem, 1.2rem + 4.2vw, 3.6rem);
+  font-weight: 700;
+  line-height: 0.98;
+  letter-spacing: -0.025em;
+  color: var(--paper);
+}
+
+.game-box__subtitle {
+  font-size: clamp(1.1rem, 1rem + 0.5vw, 1.35rem);
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.game-box__audience {
+  padding-top: 0.6rem;
+  border-top: 2px dashed rgb(253 248 238 / 0.3);
+  font-size: 0.98rem;
+  font-weight: 600;
+  color: #fbf0d2;
+}
+
+
+@media (max-width: 599px) {
+  .game-box {
+    aspect-ratio: 0.8;
+    max-width: 380px;
+  }
+
+  .game-box__print {
+    inset: 12px;
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(0, 1fr) auto;
+    text-align: center;
+  }
+
+  .lid-art {
+    max-width: 170px;
+    align-self: center;
+  }
+
+}
+
+@media (max-height: 560px) and (min-width: 600px) {
+  .game-box {
+    width: min(480px, 100%);
+  }
+}
+
+/* ---------- Shared intro controls ---------- */
+
+.box-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.7rem;
+  transition:
+    opacity 220ms var(--ease),
+    translate 220ms var(--ease);
+}
+
+.box-actions .btn {
+  min-width: 9.5rem;
+}
+
+.box-skip {
+  position: absolute;
+  top: clamp(0.75rem, 2vh, 1.25rem);
+  right: clamp(0.75rem, 2vw, 1.5rem);
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 44px;
+  padding: 0 1rem;
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--ink);
+  background: rgb(253 248 238 / 0.82);
+  border: 0;
+  border-radius: 999px;
+  box-shadow: 0 0 0 1px var(--line);
+  cursor: pointer;
+  transition:
+    background-color var(--t-hover) var(--ease),
+    box-shadow var(--t-hover) var(--ease);
+}
+
+.box-skip:hover {
+  background: var(--paper);
+  box-shadow: 0 0 0 1px var(--line-strong), var(--shadow-soft);
+}
+
+.box-skip:focus-visible {
+  outline: 3px solid var(--sage-deep);
+  outline-offset: 2px;
+}
+
+@media (max-width: 599px) {
+  .box-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: min(100%, 380px);
+  }
+
+  .box-actions .btn {
+    min-width: 0;
+  }
+
+  .box-actions .btn:first-child {
+    grid-column: 1 / -1;
+  }
+}
+
+/* ---------- The 3D box on a warm tabletop ---------- */
+
+.box3d {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  overflow: hidden;
+  background:
+    radial-gradient(90% 75% at 50% 42%, #fbf6ec 0%, #f4ebda 55%, #e8dbc2 100%);
+}
+
+.box3d::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: var(--paper-grain);
+  pointer-events: none;
+}
+
+.box3d__scene {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: 0;
+  transition: opacity 420ms var(--ease);
+}
+
+.box3d.is-ready .box3d__scene {
+  opacity: 1;
+}
+
+.box3d__scene canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: manipulation;
+}
+
+.box3d__loading {
+  position: absolute;
+  left: 50%;
+  top: 42%;
+  z-index: 2;
+  translate: -50% -50%;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--muted);
+  opacity: 0;
+  animation: box-loading 1.6s var(--ease-in-out) 600ms infinite alternate both;
+  pointer-events: none;
+}
+
+.box3d.is-ready .box3d__loading {
+  display: none;
+}
+
+@keyframes box-loading {
+  to {
+    opacity: 0.85;
+  }
+}
+
+.box3d__top {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 3;
+  height: calc(clamp(0.75rem, 2vh, 1.25rem) + 44px);
+}
+
+.box3d__bottom {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 3;
+  display: grid;
+  justify-items: center;
+  padding: 1rem var(--gutter) clamp(1.5rem, 5vh, 3rem);
+  pointer-events: none;
+}
+
+.box3d__bottom > * {
+  pointer-events: auto;
+}
+
+.box3d.is-opening {
+  cursor: progress;
+}
+
+.box3d.is-opening .box-actions,
+.box3d.is-opening .box-skip {
+  opacity: 0;
+  translate: 0 8px;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .box3d__loading {
+    animation: none;
+    opacity: 0.85;
+  }
+
+  .box3d__scene {
+    transition: none;
+  }
+}

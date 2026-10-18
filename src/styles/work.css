@@ -1,0 +1,365 @@
+/* ---------- Work collection ---------- */
+
+.project {
+  padding: clamp(1.75rem, 3.5vw, 2.75rem) 0;
+  border-top: 2px dashed var(--line-strong);
+}
+
+.project:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.project__main {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.75rem;
+  align-items: center;
+}
+
+@container (min-width: 860px) {
+  .project__main {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    gap: clamp(2rem, 4cqi, 3.5rem);
+  }
+}
+
+.project__head {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.project__heading {
+  min-width: 0;
+}
+
+.project__meta {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.project__title {
+  margin: 0.1rem 0 0.15rem;
+  font-size: var(--step-3);
+  font-weight: 650;
+}
+
+.project__subtitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--sage-ink);
+}
+
+.project__summary {
+  max-width: 40rem;
+  margin-top: 1rem;
+}
+
+.project__stat {
+  display: grid;
+  justify-items: start;
+  gap: 0.3rem;
+  width: fit-content;
+  max-width: 100%;
+  margin-top: 1.2rem;
+  padding: 1rem 1.25rem;
+  background: linear-gradient(135deg, rgb(242 212 138 / 0.34), rgb(185 205 160 / 0.3));
+  border-radius: var(--r-md);
+}
+
+.project__stat-value {
+  font-size: 2.1rem;
+  font-weight: 650;
+  line-height: 1.05;
+  color: var(--sage-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.project__stat-label {
+  font-size: 0.98rem;
+  color: var(--muted);
+}
+
+.project__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 1.3rem;
+}
+
+.project__chevron {
+  transition: rotate var(--t-hover) var(--ease);
+}
+
+.project.is-open .project__chevron {
+  rotate: 180deg;
+}
+
+.project__details {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 440ms var(--ease-in-out);
+}
+
+.project.is-open .project__details {
+  grid-template-rows: 1fr;
+}
+
+.project__details-inner {
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* ---------- Case study ---------- */
+
+/* Flat on the surface (no nested card): a rule marks where the case study begins. */
+.case {
+  display: grid;
+  gap: 2.25rem;
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--line-strong);
+}
+
+.case__h {
+  margin-bottom: 0.6rem;
+  font-size: 1.05rem;
+  font-weight: 650;
+  color: var(--terracotta-ink);
+}
+
+.case__question p {
+  max-width: 52rem;
+  font-size: var(--step-2);
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.case__cols {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2.25rem;
+}
+
+@container (min-width: 820px) {
+  .case__cols {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(2rem, 4cqi, 3.5rem);
+  }
+}
+
+.case__col {
+  display: grid;
+  align-content: start;
+  gap: 2rem;
+}
+
+.case__note {
+  margin-bottom: 0.55rem;
+  color: var(--muted);
+}
+
+.steps {
+  display: grid;
+  gap: 1rem;
+}
+
+.step {
+  display: grid;
+  grid-template-columns: 2.1rem minmax(0, 1fr);
+  gap: 0.9rem;
+}
+
+.step__n {
+  display: grid;
+  place-items: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  font-weight: 650;
+  color: var(--terracotta-ink);
+  background: rgb(235 192 166 / 0.45);
+  border-radius: 50%;
+}
+
+.step__title {
+  font-weight: 650;
+}
+
+.findings + .findings {
+  margin-top: 1.5rem;
+}
+
+.findings dl {
+  margin-top: 0.6rem;
+}
+
+.finding {
+  display: grid;
+  grid-template-columns: minmax(6.5rem, 8rem) minmax(0, 1fr);
+  gap: 1rem;
+  padding: 0.8rem 0;
+  border-top: 1px solid var(--line);
+}
+
+.finding dt {
+  font-size: 1.45rem;
+  font-weight: 650;
+  line-height: 1.15;
+  color: var(--sage-ink);
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+.findings--model dt {
+  color: var(--terracotta-ink);
+}
+
+.finding dd {
+  margin: 0;
+}
+
+.impact {
+  margin-top: 0.55rem;
+  color: var(--muted);
+}
+
+.table-wrap {
+  margin-top: 1.4rem;
+  overflow-x: auto;
+  background: var(--paper);
+  border-radius: var(--r-md);
+  box-shadow: 0 0 0 1px var(--line);
+}
+
+.data-table {
+  width: 100%;
+  min-width: 26rem;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.data-table caption {
+  caption-side: top;
+  padding: 0.8rem 1rem;
+  text-align: left;
+  font-size: 0.92rem;
+  color: var(--muted);
+}
+
+.data-table th,
+.data-table td {
+  padding: 0.6rem 1rem;
+  text-align: right;
+  border-top: 1px solid var(--line);
+}
+
+.data-table th:first-child {
+  text-align: left;
+}
+
+.data-table thead th {
+  font-size: 0.88rem;
+  font-weight: 650;
+  color: var(--terracotta-ink);
+}
+
+.data-table tbody th {
+  font-weight: 600;
+}
+
+.data-table tr.is-highlight {
+  background: var(--sage-mist);
+}
+
+.data-table tr.is-highlight th,
+.data-table tr.is-highlight td:last-child {
+  font-weight: 650;
+  color: var(--sage-ink);
+}
+
+/* ---------- Figures ---------- */
+
+.figure {
+  margin: 0;
+}
+
+.figure__frame {
+  position: relative;
+  display: block;
+  padding: 10px;
+  background: #fff;
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-soft), 0 0 0 1px var(--line);
+  transition:
+    transform var(--t-hover) var(--ease),
+    box-shadow var(--t-hover) var(--ease);
+}
+
+.figure__frame img {
+  width: 100%;
+  border-radius: 8px;
+}
+
+.figure__frame:hover,
+.figure__frame:focus-visible {
+  transform: translateY(-3px) rotate(-0.3deg);
+  box-shadow: var(--shadow-lift), 0 0 0 1px var(--line);
+}
+
+.figure__open {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.75rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--sage-ink);
+  background: rgb(253 248 238 / 0.96);
+  border-radius: 999px;
+  box-shadow: var(--shadow-soft);
+  opacity: 0;
+  transform: translateY(3px);
+  transition:
+    opacity var(--t-hover) var(--ease),
+    transform var(--t-hover) var(--ease);
+}
+
+.figure__frame:hover .figure__open,
+.figure__frame:focus-visible .figure__open {
+  opacity: 1;
+  transform: none;
+}
+
+.figure figcaption {
+  margin-top: 0.75rem;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+  gap: 2rem;
+  align-items: start;
+}
+
+@container (max-width: 480px) {
+  .finding {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.2rem;
+  }
+
+  .token {
+    width: 44px;
+    height: 44px;
+    font-size: 1.05rem;
+  }
+}

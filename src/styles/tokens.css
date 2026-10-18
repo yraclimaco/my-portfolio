@@ -1,0 +1,60 @@
+/* Cozy palette. Text contrast (WCAG) checked on the real pairings:
+   ink/cream 11.2 · ink/paper 12.0 · muted/paper 5.9 · muted/oat 5.1
+   sage-deep/paper 5.4 · paper on sage-deep 5.0 · terracotta-ink/paper 5.0 · coast-ink/paper 5.9
+   Terrain colours are decorative only. */
+:root {
+  color-scheme: light;
+
+  /* Surfaces & text */
+  --cream: #f7f0e3;
+  --paper: #fdf8ee;
+  --oat: #f1e6d2;
+  --ink: #3b3129;
+  --muted: #6b5e52;
+  --sage-deep: #4f6e51;
+  --sage-ink: #45624a;
+  --sage-mist: #e8efdf;
+  --terracotta-ink: #9a5b41;
+  --coast-ink: #3f6670;
+
+  /* Terrain (decorative) */
+  --butter: #f2d48a;
+  --peach: #ebc0a6;
+  --terracotta: #d4927a;
+  --sage: #b9cda0;
+  --sage-dark: #8fae8d;
+  --coast: #b4d0d2;
+  --coast-deep: #9dbec2;
+  --shore: #f3e7cc;
+
+  --line: rgb(59 49 41 / 0.1);
+  --line-strong: rgb(59 49 41 / 0.2);
+
+  --font: 'Manrope Variable', 'Segoe UI', system-ui, -apple-system, sans-serif;
+
+  --step-0: 1.0625rem;
+  --step-1: 1.2rem;
+  --step-2: clamp(1.35rem, 1.2rem + 0.6vw, 1.65rem);
+  --step-3: clamp(1.6rem, 1.35rem + 1vw, 2.1rem);
+  --step-4: clamp(2.1rem, 1.6rem + 2vw, 3rem);
+
+  --gutter: clamp(1rem, 4vw, 2.5rem);
+  --measure: 66ch;
+  --header-h: 60px;
+
+  --r-sm: 10px;
+  --r-md: 16px;
+  --r-lg: 26px;
+
+  --shadow-soft: 0 1px 2px rgb(59 49 41 / 0.05), 0 8px 22px -10px rgb(59 49 41 / 0.22);
+  --shadow-lift: 0 2px 4px rgb(59 49 41 / 0.06), 0 16px 34px -14px rgb(59 49 41 / 0.3);
+  --shadow-panel: 0 2px 8px rgb(59 49 41 / 0.08), 0 40px 90px -30px rgb(44 62 66 / 0.5);
+  --press: inset 0 -3px 0 rgb(59 49 41 / 0.12);
+
+  --ease: cubic-bezier(0.25, 0.8, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.45, 0, 0.25, 1);
+  --t-hover: 200ms;
+  --t-section: 480ms;
+
+  --paper-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.23 0 0 0 0 0.19 0 0 0 0 0.16 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+}

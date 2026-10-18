@@ -1,0 +1,376 @@
+/* ---------- Stage: the full-screen tabletop ---------- */
+
+.stage {
+  position: fixed;
+  top: var(--header-h);
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  background: radial-gradient(120% 95% at 62% 50%, #c3dadc 0%, #aecbce 58%, #9dbcc0 100%);
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+/* Soft vignette and paper grain over the whole table. */
+.stage::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background:
+    radial-gradient(130% 100% at 60% 50%, rgb(60 82 86 / 0) 60%, rgb(60 82 86 / 0.16) 100%),
+    var(--paper-grain);
+}
+
+/* After the box opens, the labels and robber settle in over the board the camera landed on. */
+.stage.is-revealing .dest__plaque,
+.stage.is-revealing .hint-pill {
+  animation: reveal-up 520ms var(--ease) 80ms both;
+}
+
+.stage.is-revealing .intro {
+  animation: reveal-fade 600ms var(--ease) both;
+}
+
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    translate: 0 6px;
+  }
+}
+
+@keyframes reveal-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+.world {
+  position: absolute;
+  inset: 0;
+  transform-origin: 0 0;
+  transition: transform var(--t-section) var(--ease-in-out);
+  will-change: transform;
+}
+
+.stage.is-reduced .world {
+  transition: none;
+}
+
+.map {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+}
+
+/* ---------- Tiles ---------- */
+
+.map__shore path {
+  fill: var(--shore);
+}
+
+/* Motif colours come from content/terrain.js, shared with the 3D box. */
+.tile__glyph {
+  pointer-events: none;
+}
+
+.tile__lift {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform var(--t-hover) var(--ease);
+}
+
+.tile__glow {
+  fill: #fffdf6;
+  opacity: 0;
+  transition: opacity var(--t-hover) var(--ease);
+  pointer-events: none;
+}
+
+.tile__ring {
+  fill: none;
+  stroke: #fffaf0;
+  stroke-width: 2.5;
+  stroke-dasharray: 2 8;
+  stroke-linecap: round;
+  opacity: 0.6;
+  transition: opacity var(--t-hover) var(--ease);
+  pointer-events: none;
+}
+
+.tile.is-target .tile__ring {
+  opacity: 0.95;
+}
+
+.tile.is-hot .tile__lift {
+  transform: translateY(-5px);
+}
+
+.tile.is-hot .tile__glow {
+  opacity: 0.22;
+}
+
+.tile.is-hot .tile__ring,
+.tile.is-active .tile__ring {
+  opacity: 1;
+  stroke-dasharray: none;
+}
+
+.tile.is-active .tile__glow {
+  opacity: 0.16;
+}
+
+/* ---------- Destination labels ---------- */
+
+.dests {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.dest {
+  position: absolute;
+  width: calc(var(--s) * 1.732 * 0.93);
+  height: calc(var(--s) * 2 * 0.93);
+  transform: translate(-50%, -50%);
+  clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+  color: var(--ink);
+  text-decoration: none;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.dest:focus-visible {
+  outline: none;
+}
+
+.dest__plaque {
+  position: absolute;
+  left: 50%;
+  top: calc(50% - var(--s) * 0.3);
+  display: grid;
+  justify-items: center;
+  gap: 0;
+  padding: 0.4rem 1rem 0.5rem;
+  max-width: calc(var(--s) * 1.62);
+  text-align: center;
+  white-space: nowrap;
+  background: rgb(253 248 238 / 0.95);
+  border-radius: 999px;
+  box-shadow: var(--press), var(--shadow-soft);
+  transform: translate(-50%, -50%);
+  transition:
+    transform var(--t-hover) var(--ease),
+    box-shadow var(--t-hover) var(--ease),
+    background-color var(--t-hover) var(--ease);
+}
+
+.dest__label {
+  font-size: clamp(1.02rem, calc(var(--s) * 0.2), 1.45rem);
+  font-weight: 650;
+  line-height: 1.15;
+}
+
+.dest__sub {
+  font-size: 0.82rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--muted);
+}
+
+.stage.is-compact .dest__sub {
+  display: none;
+}
+
+.dest.is-hot .dest__plaque {
+  transform: translate(-50%, calc(-50% - 5px));
+  background: #fffdf7;
+  box-shadow: var(--press), var(--shadow-lift);
+}
+
+.dest:focus-visible .dest__plaque {
+  outline: 3px solid var(--sage-deep);
+  outline-offset: 3px;
+}
+
+.dest.is-active .dest__plaque {
+  background: #fffdf7;
+  box-shadow:
+    0 0 0 3px rgb(79 110 81 / 0.35),
+    var(--shadow-lift);
+}
+
+/* ---------- Robber ---------- */
+
+.robber {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 5;
+  width: calc(var(--robber-h) * 0.625);
+  height: var(--robber-h);
+  margin-left: calc(var(--robber-h) * -0.3125);
+  margin-top: calc(var(--robber-h) * -1);
+  cursor: grab;
+  touch-action: none;
+}
+
+.stage.is-dragging .robber {
+  cursor: grabbing;
+  z-index: 6;
+}
+
+.robber__shadow {
+  position: absolute;
+  left: 50%;
+  bottom: -5px;
+  width: 118%;
+  height: 12px;
+  margin-left: -59%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(59 44 31 / 0.45), rgb(59 44 31 / 0));
+  pointer-events: none;
+}
+
+/* Rotation pivots on the base so it stays grounded while it wobbles. */
+.robber__lift {
+  position: absolute;
+  inset: 0;
+  display: block;
+  transform-origin: 50% 96%;
+  filter: drop-shadow(0 1px 1px rgb(46 31 19 / 0.25));
+}
+
+.robber__lift svg {
+  transition: transform var(--t-hover) var(--ease);
+}
+
+.robber:hover .robber__lift svg {
+  transform: translateY(-2px);
+}
+
+.hint-pill {
+  position: absolute;
+  z-index: 4;
+  padding: 0.3rem 0.85rem 0.35rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--paper);
+  background: rgb(59 49 41 / 0.78);
+  border-radius: 999px;
+  box-shadow: 0 6px 16px -8px rgb(0 0 0 / 0.5);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  animation: hint-in 500ms var(--ease) 400ms both;
+}
+
+@keyframes hint-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -30%);
+  }
+}
+
+/* ---------- Intro ---------- */
+
+.intro {
+  position: absolute;
+  z-index: 4;
+  transition:
+    opacity var(--t-section) var(--ease),
+    translate var(--t-section) var(--ease);
+}
+
+.intro.is-hidden {
+  opacity: 0;
+  translate: -14px 0;
+}
+
+.intro--side {
+  left: clamp(1.5rem, 4vw, 3.5rem);
+  top: 50%;
+  width: calc(clamp(360px, 34vw, 520px) - clamp(2.5rem, 6vw, 4.5rem));
+  transform: translateY(-50%);
+}
+
+/* A soft wash of cream behind the intro so text reads over the sea. */
+.intro--side::before {
+  content: '';
+  position: absolute;
+  inset: -45% -30% -45% -70%;
+  z-index: -1;
+  background: radial-gradient(closest-side, rgb(247 240 227 / 0.96), rgb(247 240 227 / 0.86) 55%, rgb(247 240 227 / 0));
+  pointer-events: none;
+}
+
+.intro--stack {
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 1rem var(--gutter) 1.4rem;
+  text-align: center;
+  background: linear-gradient(to bottom, rgb(247 240 227 / 0.97) 0%, rgb(247 240 227 / 0.9) 72%, rgb(247 240 227 / 0));
+}
+
+.intro__eyebrow {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--terracotta-ink);
+}
+
+.intro__title {
+  margin: 0.2rem 0 0.3rem;
+  font-size: clamp(2.3rem, 1.4rem + 2.8vw, 3.7rem);
+  font-weight: 700;
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+}
+
+.intro__focus {
+  font-size: clamp(1.15rem, 1rem + 0.4vw, 1.4rem);
+  font-weight: 600;
+  color: var(--sage-ink);
+}
+
+.intro__text {
+  max-width: 40ch;
+  margin-top: 0.9rem;
+  font-size: 1.04rem;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+.intro__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 1.3rem;
+}
+
+.intro--stack .intro__title {
+  font-size: clamp(2rem, 1.5rem + 2vw, 2.7rem);
+}
+
+.intro--stack .intro__text {
+  margin-inline: auto;
+}
+
+.intro--stack .intro__actions {
+  justify-content: center;
+}
+
+@media (max-width: 599px) {
+  .intro--stack {
+    padding-top: 0.75rem;
+  }
+
+  .intro--stack .intro__eyebrow,
+  .intro--stack .intro__text,
+  .intro--stack .intro__actions {
+    display: none;
+  }
+}
