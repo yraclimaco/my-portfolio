@@ -269,7 +269,7 @@ export async function createWorld({
   // ---------- Robber: root (board position) > lift (pickup, tilt and wobble, pivoting on its base).
   const robberRoot = new Group()
   const lift = new Group()
-  const robber = new Mesh(robberGeometry(ROBBER_H), new MeshStandardMaterial({ color: '#6a4c38', roughness: 0.62, metalness: 0 }))
+  const robber = new Mesh(robberGeometry(ROBBER_H), new MeshStandardMaterial({ color: '#a9adb0', roughness: 0.66, metalness: 0 }))
   robber.castShadow = true
   lift.add(robber)
   const blob = new Mesh(

@@ -4,6 +4,7 @@ import gsap from 'gsap'
 import { Glyph } from './ui'
 import { profile } from '../content/profile'
 import { SQRT3, roundedHexPath } from '../lib/hex'
+import { ROBBER_COLORS, ROBBER_OUTLINE } from '../lib/robberShape'
 
 // The intro's actions, shared by the 3D box and the static fallback.
 export function BoxActions({ onOpen, actionsRef, className = '' }) {
@@ -65,10 +66,8 @@ function LidArt() {
         return <path key={`${h[0]}${h[1]}`} d={hex} transform={`translate(${x} ${y})`} fill={h[2]} />
       })}
       <g transform="translate(-9 -24) scale(0.45)">
-        <ellipse cx="20" cy="62" rx="16" ry="4" fill="#3b2c1f" opacity="0.25" />
-        <path d="M15.4 20.5C14.6 26 12.6 31.5 10.6 37.4 8.4 44 7.4 49.5 7.6 54h24.8c.2-4.5-.8-10-3-16.6-2-5.9-4-11.4-4.8-16.9z" fill="#6a4c38" />
-        <circle cx="20" cy="11.4" r="8.6" fill="#6a4c38" />
-        <path d="M6.4 53.2h27.2c1.6 0 2.9 1.3 2.9 2.9v1.6c0 2.4-1.9 4.3-4.3 4.3H7.8c-2.4 0-4.3-1.9-4.3-4.3v-1.6c0-1.6 1.3-2.9 2.9-2.9z" fill="#4e3827" />
+        <ellipse cx="20" cy="62" rx="15" ry="3.6" fill="#141418" opacity="0.25" />
+        <path d={ROBBER_OUTLINE} fill={ROBBER_COLORS.mid} />
       </g>
     </svg>
   )

@@ -4,6 +4,7 @@ import { islandTiles } from '../content/board'
 import { DEST_GLYPH_OPACITY, fills, glyphFor, glyphInk, glyphs } from '../content/terrain'
 import { profile } from '../content/profile'
 import { SQRT3, hash, hexDistance, roundedHexPath } from '../lib/hex'
+import { ROBBER_COLORS, ROBBER_OUTLINE } from '../lib/robberShape'
 
 const FONT = '"Manrope Variable", "Segoe UI", system-ui, sans-serif'
 const glyphPaths = Object.fromEntries(
@@ -232,17 +233,12 @@ function drawRobber(ctx, x, y, s) {
   ctx.translate(x - s * 0.5, y - s * 1.6)
   const k = s / 40
   ctx.scale(k, k)
-  ctx.fillStyle = 'rgb(59 44 31 / 0.25)'
+  ctx.fillStyle = 'rgb(20 20 24 / 0.25)'
   ctx.beginPath()
-  ctx.ellipse(20, 62, 16, 4, 0, 0, Math.PI * 2)
+  ctx.ellipse(20, 62, 15, 3.6, 0, 0, Math.PI * 2)
   ctx.fill()
-  ctx.fillStyle = '#6a4c38'
-  ctx.fill(new Path2D('M15.4 20.5C14.6 26 12.6 31.5 10.6 37.4 8.4 44 7.4 49.5 7.6 54h24.8c.2-4.5-.8-10-3-16.6-2-5.9-4-11.4-4.8-16.9z'))
-  ctx.beginPath()
-  ctx.arc(20, 11.4, 8.6, 0, Math.PI * 2)
-  ctx.fill()
-  ctx.fillStyle = '#4e3827'
-  ctx.fill(new Path2D('M6.4 53.2h27.2c1.6 0 2.9 1.3 2.9 2.9v1.6c0 2.4-1.9 4.3-4.3 4.3H7.8c-2.4 0-4.3-1.9-4.3-4.3v-1.6c0-1.6 1.3-2.9 2.9-2.9z'))
+  ctx.fillStyle = ROBBER_COLORS.mid
+  ctx.fill(new Path2D(ROBBER_OUTLINE))
   ctx.restore()
 }
 

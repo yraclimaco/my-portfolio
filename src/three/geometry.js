@@ -1,5 +1,6 @@
 // Geometry helpers for the 3D world: box walls, rounded hex tiles, the turned robber.
 import { ExtrudeGeometry, LatheGeometry, Shape, Vector2 } from 'three'
+import { ROBBER_TOP, robberProfile } from '../lib/robberShape'
 
 export async function fontsReady() {
   if (!document.fonts?.load) return
@@ -74,20 +75,12 @@ export const tileUV = (R) => ({
   },
 })
 
-// Turned-wood robber, following the outline of the 2D piece (40 x 64 drawing units).
+// The robber, turned from the shared profile (see lib/robberShape.js): the classic wooden Catan
+// robber's ball head, egg-shaped body, and flared base.
 export function robberGeometry(height) {
-  const pts = [
-    [0, 62], [13.6, 62], [15.7, 61.2], [16.5, 59.6], [16.5, 56.6], [15.6, 54.7], [12.4, 54],
-    [12.1, 49], [11.2, 44], [9.4, 37.4], [7.4, 31], [5.6, 25], [4.7, 21.6], [6.3, 21.2], [6.4, 20.4], [5.4, 19.7],
-  ]
-  for (let a = -62; a <= 90; a += 8) {
-    const rad = (a * Math.PI) / 180
-    pts.push([8.6 * Math.cos(rad), 11.4 - 8.6 * Math.sin(rad)])
-  }
-  pts.push([0, 2.8])
-  const k = height / 59.2
+  const k = height / (62 - ROBBER_TOP)
   return new LatheGeometry(
-    pts.map(([r, y]) => new Vector2(Math.max(r, 0) * k, (62 - y) * k)),
-    40,
+    robberProfile().map(([r, y]) => new Vector2(Math.max(r, 0) * k, (62 - y) * k)),
+    48,
   )
 }
