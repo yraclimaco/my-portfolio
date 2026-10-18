@@ -1,0 +1,603 @@
+/* ---------- Skills: a visual toolkit ---------- */
+
+.sgroup {
+  min-width: 0;
+  margin-top: clamp(2rem, 4vw, 2.75rem);
+}
+
+.sgroup:first-of-type {
+  margin-top: 0;
+}
+
+.sgroup__h {
+  margin-bottom: 0.85rem;
+  font-size: 1.05rem;
+  font-weight: 650;
+  color: var(--terracotta-ink);
+}
+
+.sgroup__lead {
+  margin: -0.4rem 0 0.9rem;
+  color: var(--muted);
+}
+
+/* Python and SQL: two large tiles. */
+.skills-featured {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  gap: 1rem;
+}
+
+/* Libraries, data and cloud, tools: compact logo tiles. */
+.skills-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 9.25rem), 1fr));
+  gap: 0.6rem;
+}
+
+.skills-columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0 2.5rem;
+  margin-top: clamp(2rem, 4vw, 2.75rem);
+}
+
+.skill {
+  min-width: 0;
+  container-type: inline-size;
+}
+
+/* Very narrow tiles (small phones, large text): the mark sits above the name. */
+@container (max-width: 13rem) {
+  .skill__btn {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .skill__btn .skill-mark,
+  .skill__btn .skill-mono {
+    grid-column: 1 / -1;
+  }
+}
+
+.skill__btn {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  min-height: 56px;
+  padding: 0.65rem 0.85rem;
+  font: inherit;
+  text-align: left;
+  color: var(--ink);
+  background: var(--paper);
+  border: 0;
+  border-radius: var(--r-md);
+  box-shadow: 0 0 0 1px var(--line-strong);
+  cursor: pointer;
+  transition:
+    transform var(--t-hover) var(--ease),
+    box-shadow var(--t-hover) var(--ease),
+    background-color var(--t-hover) var(--ease);
+}
+
+.skill__btn.is-static {
+  cursor: default;
+  background: rgb(253 248 238 / 0.6);
+  box-shadow: 0 0 0 1px var(--line);
+}
+
+button.skill__btn:hover {
+  transform: translateY(-2px);
+  background: #fffdf7;
+  box-shadow: 0 0 0 1px var(--line-strong), var(--shadow-soft);
+}
+
+button.skill__btn:focus-visible {
+  outline: 3px solid var(--sage-deep);
+  outline-offset: 2px;
+}
+
+button.skill__btn[aria-expanded='true'] {
+  background: var(--sage-mist);
+  box-shadow: 0 0 0 2px var(--sage-dark);
+}
+
+.skill--featured .skill__btn {
+  min-height: 112px;
+  gap: 1.1rem;
+  padding: 1.25rem 1.4rem;
+  border-radius: var(--r-lg);
+  box-shadow:
+    0 0 0 1px var(--line-strong),
+    0 4px 0 #3f5a41;
+}
+
+.skill--featured button.skill__btn:hover {
+  box-shadow:
+    0 0 0 1px var(--line-strong),
+    0 6px 0 #3f5a41,
+    var(--shadow-soft);
+}
+
+.skill__text {
+  display: grid;
+  min-width: 0;
+}
+
+.skill__name {
+  font-weight: 650;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.skill--featured .skill__name {
+  font-size: var(--step-2);
+}
+
+.skill__detail {
+  font-size: 0.85rem;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+
+.skill__chev {
+  color: var(--sage-ink);
+  transition: rotate var(--t-hover) var(--ease);
+}
+
+.skill__btn[aria-expanded='true'] .skill__chev {
+  rotate: 180deg;
+}
+
+.skill-mark {
+  flex: none;
+}
+
+/* Monogram letters are sized with their badge (set inline), so the two always scale together. */
+.skill-mono {
+  display: grid;
+  flex: none;
+  place-items: center;
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--sage-ink);
+  background: var(--sage-mist);
+  border-radius: 7px;
+}
+
+/* Analytics methods and data practices: readable words, not logos. */
+.skill-words {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 0.75rem;
+}
+
+.sgroup--methods .skill-words {
+  margin-top: 0;
+}
+
+.skill-word {
+  display: inline-flex;
+  align-items: center;
+  min-height: 38px;
+  max-width: 100%;
+  padding: 0.3rem 0.9rem;
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+  background: var(--oat);
+  border: 0;
+  border-radius: 999px;
+}
+
+button.skill-word {
+  cursor: pointer;
+  box-shadow: inset 0 0 0 1px var(--line-strong);
+  transition: background-color var(--t-hover) var(--ease);
+}
+
+button.skill-word::after {
+  content: '';
+  width: 0.45rem;
+  height: 0.45rem;
+  margin-left: 0.5rem;
+  background: var(--sage-dark);
+  border-radius: 50%;
+}
+
+button.skill-word:hover {
+  background: var(--sage-mist);
+}
+
+button.skill-word:focus-visible {
+  outline: 3px solid var(--sage-deep);
+  outline-offset: 2px;
+}
+
+button.skill-word[aria-expanded='true'] {
+  background: var(--sage-mist);
+  box-shadow: inset 0 0 0 2px var(--sage-dark);
+}
+
+.skill-word.is-static {
+  background: rgb(241 230 210 / 0.6);
+}
+
+.sgroup__used:empty {
+  display: none;
+}
+
+.used-in {
+  margin-top: 0.75rem;
+  padding: 0.85rem 1.1rem;
+  background: var(--cream);
+  border-radius: var(--r-md);
+  border-left: 3px solid var(--sage-dark);
+  animation: used-in 220ms var(--ease);
+}
+
+@keyframes used-in {
+  from {
+    opacity: 0;
+    translate: 0 -4px;
+  }
+}
+
+.used-in__h {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--terracotta-ink);
+}
+
+.used-in ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.25rem;
+  margin-top: 0.3rem;
+}
+
+.used-in a {
+  display: inline-flex;
+  min-height: 32px;
+  align-items: center;
+  font-weight: 600;
+  color: var(--sage-ink);
+}
+
+.skills-github {
+  margin-top: clamp(2.25rem, 5vw, 3rem);
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--line);
+}
+
+/* ---------- Beyond Data: a cozy scrapbook ---------- */
+
+.beyond-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: clamp(2rem, 4vw, 2.75rem);
+}
+
+.beyond-nav a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 44px;
+  padding: 0.25rem 1rem 0.25rem 0.5rem;
+  font-weight: 600;
+  color: var(--ink);
+  text-decoration: none;
+  background: var(--paper);
+  border-radius: 999px;
+  box-shadow: 0 0 0 1px var(--line-strong);
+  transition:
+    background-color var(--t-hover) var(--ease),
+    transform var(--t-hover) var(--ease);
+}
+
+.beyond-nav a:hover {
+  background: #fffdf7;
+  transform: translateY(-1px);
+}
+
+.beyond-nav a:focus-visible {
+  outline: 3px solid var(--sage-deep);
+  outline-offset: 2px;
+}
+
+.beyond-nav__art {
+  width: 30px;
+  height: 30px;
+}
+
+/* Four interests, not four identical cards: wide rows bookend a pair. */
+.scrapbook {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(1.25rem, 3vw, 2rem);
+}
+
+@container (min-width: 760px) {
+  .scrapbook {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .hobby:nth-child(4n + 1),
+  .hobby:nth-child(4n + 4) {
+    grid-column: 1 / -1;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    align-items: center;
+  }
+
+  .hobby:nth-child(4n + 4) .hobby__media {
+    order: 2;
+  }
+}
+
+.hobby {
+  display: grid;
+  gap: 1.25rem;
+  min-width: 0;
+  padding: clamp(1.25rem, 3vw, 2rem);
+  background: var(--cream);
+  border-radius: var(--r-lg);
+  scroll-margin-top: 1rem;
+}
+
+.hobby:nth-child(4n + 2) {
+  background: #f3ecdb;
+}
+
+.hobby:nth-child(4n + 3) {
+  background: rgb(232 239 223 / 0.7);
+}
+
+.hobby__media {
+  display: grid;
+  place-items: center;
+  min-width: 0;
+}
+
+/* The illustration sits on a stitched patch, like a sticker in a scrapbook. */
+.hobby__art {
+  width: clamp(7rem, 22cqi, 10rem);
+  height: auto;
+  padding: 0.75rem;
+  background: var(--paper);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 6px var(--paper),
+    0 0 0 7.5px rgb(79 110 81 / 0.25),
+    var(--shadow-soft);
+  transition:
+    rotate 380ms var(--ease),
+    scale 380ms var(--ease);
+}
+
+.hobby:hover .hobby__art,
+.hobby:focus-within .hobby__art {
+  rotate: -5deg;
+  scale: 1.04;
+}
+
+.hobby__text {
+  min-width: 0;
+}
+
+.hobby__title {
+  font-size: var(--step-2);
+  font-weight: 650;
+  line-height: 1.25;
+}
+
+.hobby__title:focus {
+  outline: none;
+}
+
+.hobby__summary {
+  margin-top: 0.4rem;
+  font-size: 1.08rem;
+  color: var(--muted);
+}
+
+.hobby__story {
+  max-width: 40rem;
+  margin-top: 0.75rem;
+}
+
+.hobby__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  margin-top: 0.9rem;
+}
+
+.hobby__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 36px;
+  font-weight: 600;
+  color: var(--sage-ink);
+}
+
+/* Photos: a white-bordered print, gently tilted; more photos sit in a strip underneath. */
+.hobby__photos {
+  display: grid;
+  gap: 0.75rem;
+  width: 100%;
+  /* Room for the gently tilted print, so it stays inside its own frame. */
+  padding: 8px;
+}
+
+/* The print is tilted a touch, straightening on hover or focus. */
+.hobby__photo {
+  margin: 0;
+  rotate: -1.2deg;
+  transition: rotate var(--t-hover) var(--ease);
+}
+
+.hobby__photo:hover,
+.hobby__photo:focus-within {
+  rotate: 0deg;
+}
+
+.hobby__photo-btn,
+.hobby__thumb {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 8px;
+  background: #fff;
+  border: 0;
+  border-radius: 10px;
+  box-shadow: var(--shadow-soft);
+  cursor: zoom-in;
+  transition:
+    rotate var(--t-hover) var(--ease),
+    box-shadow var(--t-hover) var(--ease);
+}
+
+.hobby__photo-btn:hover,
+.hobby__thumb:hover {
+  box-shadow: var(--shadow-lift);
+}
+
+.hobby__photo-btn:focus-visible,
+.hobby__thumb:focus-visible {
+  outline: 3px solid var(--sage-deep);
+  outline-offset: 3px;
+}
+
+/* The main photo keeps its own shape (portrait or landscape), up to a comfortable height;
+   anything taller is trimmed around its focus point. Defaults to 4:3 without a known size. */
+.hobby__photo img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  max-height: min(68vh, 32rem);
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+.hobby__photo figcaption {
+  margin-top: 0.6rem;
+  font-size: 0.92rem;
+  color: var(--muted);
+}
+
+.hobby__strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.hobby__thumb {
+  padding: 5px;
+}
+
+.hobby__thumb img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.hobby__more {
+  position: absolute;
+  inset: 5px;
+  display: grid;
+  place-items: center;
+  font-weight: 650;
+  color: var(--paper);
+  background: rgb(59 49 41 / 0.55);
+  border-radius: 4px;
+}
+
+/* ---------- Lightbox ---------- */
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  place-items: center;
+  gap: 1rem;
+  padding: clamp(1rem, 4vw, 2.5rem);
+}
+
+.lightbox__scrim {
+  position: absolute;
+  inset: 0;
+  background: rgb(30 36 34 / 0.82);
+}
+
+.lightbox__figure {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 0.75rem;
+  max-width: min(1100px, 100%);
+  max-height: 100%;
+  margin: 0;
+  min-height: 0;
+}
+
+.lightbox__figure img {
+  max-width: 100%;
+  max-height: calc(100dvh - 11rem);
+  width: auto;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 20px 60px -20px rgb(0 0 0 / 0.6);
+}
+
+.lightbox__figure figcaption {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.25rem 1rem;
+  max-width: 40rem;
+  text-align: center;
+  color: #f4ecdc;
+}
+
+.lightbox__count {
+  color: rgb(244 236 220 / 0.7);
+}
+
+.lightbox__controls {
+  position: relative;
+  display: flex;
+  gap: 0.6rem;
+}
+
+.lightbox__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 46px;
+  min-height: 46px;
+  justify-content: center;
+  padding: 0 1rem;
+  font: inherit;
+  font-weight: 600;
+  color: var(--ink);
+  background: var(--paper);
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.lightbox__btn:focus-visible {
+  outline: 3px solid #f3e6c9;
+  outline-offset: 3px;
+}

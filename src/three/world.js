@@ -69,7 +69,7 @@ const BOARD_PITCH_PORTRAIT = 1.06
 const REST_DROP = 0.56
 const HOME_REST = 0.22
 const LABEL_RAISE = 0.42
-const HINT_RAISE = 0.72 // the hint sits just above the robber's head at home, between the label rows
+const LABEL_SPREAD = 1.22
 
 const ENV = {
   intro: { c: '#4b4433', m: '#1f2d2a', e: '#0f1817', sky: '#7f9893', ground: '#2b2a22', hemi: 0.42, key: 0.5, pool: 2.5 },
@@ -484,13 +484,10 @@ export async function createWorld({
       const el = getLabel?.(d.id)
       if (!el) continue
       const p = tileXZ(destTile[d.id])
-      const s = toScreen(anchor.set(p.x, TILE_TOP + destMeshes[d.id].position.y - TILE_BASE_Y, p.z - LABEL_RAISE))
+      // Top and bottom row labels lean a little outward, so neighbouring labels never touch.
+      const x = Math.abs(p.z) > 1 ? p.x * LABEL_SPREAD : p.x
+      const s = toScreen(anchor.set(x, TILE_TOP + destMeshes[d.id].position.y - TILE_BASE_Y, p.z - LABEL_RAISE))
       el.style.transform = `translate3d(${s.x.toFixed(1)}px, ${s.y.toFixed(1)}px, 0)`
-    }
-    const hint = getLabel?.('hint')
-    if (hint) {
-      const s = toScreen(anchor.set(0, TILE_TOP, -HINT_RAISE))
-      hint.style.transform = `translate3d(${s.x.toFixed(1)}px, ${s.y.toFixed(1)}px, 0)`
     }
   }
 

@@ -158,7 +158,7 @@
   border-radius: var(--r-sm);
 }
 
-@media (max-width: 819px) {
+@media (max-width: 1099px) {
   .site-nav {
     display: none;
   }

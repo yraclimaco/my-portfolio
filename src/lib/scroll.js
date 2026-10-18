@@ -62,3 +62,39 @@ export function refreshWhenSettled(root) {
 
 // Dev only: lets automated checks count live triggers (no duplicates after reopening a section).
 if (import.meta.env.DEV) window.__ST = ScrollTrigger
+
+// Jump to an anchor inside the content panel (e.g. /experience#ds3): scroll the panel itself,
+// smoothly unless reduced motion asks otherwise, then put focus on the target's heading.
+export function scrollToAnchor(id, { smooth = true } = {}) {
+  const target = id && document.getElementById(id)
+  const area = target?.closest('[data-panel-scroll]')
+  if (!target || !area) return false
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  const top = target.getBoundingClientRect().top - area.getBoundingClientRect().top + area.scrollTop - 16
+  area.scrollTo({ top, behavior: smooth && !reduced ? 'smooth' : 'auto' })
+  const heading = target.matches('h2, h3') ? target : target.querySelector('h2, h3')
+  if (heading) {
+    if (!heading.hasAttribute('tabindex')) heading.setAttribute('tabindex', '-1')
+    heading.focus({ preventScroll: true })
+  }
+  return true
+}
+
+// On arriving at a page with an anchor: jump once the surface has opened, then check again a moment
+// later in case images or fonts moved things, and correct if needed. Returns a cleanup.
+export function arriveAtAnchor(id) {
+  if (!id) return () => {}
+  const first = setTimeout(() => scrollToAnchor(id), 420)
+  const again = setTimeout(() => {
+    const target = document.getElementById(id)
+    const area = target?.closest('[data-panel-scroll]')
+    if (!target || !area) return
+    const off = target.getBoundingClientRect().top - area.getBoundingClientRect().top
+    const atBottom = area.scrollTop >= area.scrollHeight - area.clientHeight - 2
+    if (Math.abs(off - 16) > 24 && !atBottom) scrollToAnchor(id, { smooth: false })
+  }, 1200)
+  return () => {
+    clearTimeout(first)
+    clearTimeout(again)
+  }
+}

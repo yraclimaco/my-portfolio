@@ -1,21 +1,24 @@
-// The board: a hex island with four destinations around a central desert,
+// The board: a hex island with six destinations on the tiles around a central desert,
 // where the robber starts (as in the game that inspired it).
 
 // Axial directions for the six hexes around the centre.
 export const DIRS = { E: [1, 0], NE: [1, -1], NW: [0, -1], W: [-1, 0], SW: [-1, 1], SE: [0, 1] }
 
 // Listed in navigation order, which is also the keyboard order on the board.
+// The id doubles as the route segment (except Projects, which keeps the id 'work').
 export const destinations = [
-  { id: 'work', label: 'Projects', sub: 'Four projects', to: '/projects', at: 'NW', terrain: 'wheat' },
-  { id: 'experience', label: 'Experience', sub: 'Three roles', to: '/experience', at: 'NE', terrain: 'hills' },
-  { id: 'about', label: 'About', sub: 'Profile & interests', to: '/about', at: 'SW', terrain: 'pasture' },
-  { id: 'contact', label: 'Contact', sub: 'Email & links', to: '/contact', at: 'SE', terrain: 'forest' },
+  { id: 'work', label: 'Projects', to: '/projects', at: 'NW', terrain: 'wheat' },
+  { id: 'experience', label: 'Experience', to: '/experience', at: 'NE', terrain: 'hills' },
+  { id: 'skills', label: 'Skills', to: '/skills', at: 'E', terrain: 'orchard' },
+  { id: 'about', label: 'About', to: '/about', at: 'SW', terrain: 'pasture' },
+  { id: 'beyond-data', label: 'Beyond Data', to: '/beyond-data', at: 'W', terrain: 'forest' },
+  { id: 'contact', label: 'Contact', to: '/contact', at: 'SE', terrain: 'forest' },
 ]
 
 export const HOME = 'home'
 
-// Remaining ring-one hexes, then ring two clockwise from due east.
-export const ringOneTerrain = { E: 'orchard', W: 'forest' }
+// Ring one is all destinations; ring two runs clockwise from due east.
+export const ringOneTerrain = {}
 export const ringTwoTerrain = [
   'pasture', 'wheat', 'forest', 'hills', 'orchard', 'pasture',
   'wheat', 'forest', 'orchard', 'hills', 'pasture', 'wheat',
@@ -49,7 +52,7 @@ export function islandTiles() {
   return tiles
 }
 
-export const sections = ['work', 'experience', 'about', 'contact']
+export const sections = ['work', 'experience', 'skills', 'about', 'beyond-data', 'contact']
 
 export function sectionFor(pathname) {
   const path = pathname.replace(/\/+$/, '') || '/'

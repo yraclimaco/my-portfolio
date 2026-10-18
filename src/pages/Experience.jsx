@@ -1,12 +1,18 @@
-import { useRef } from 'react'
-import { Link } from 'react-router-dom'
+import { useEffect, useRef } from 'react'
+import { Link, useLocation } from 'react-router-dom'
 import { experience } from '../content/experience'
-import { MOTION_OK, ScrollTrigger, gsap, panelScroller, refreshWhenSettled, useGSAP } from '../lib/scroll'
+import { MOTION_OK, ScrollTrigger, gsap, panelScroller, refreshWhenSettled, arriveAtAnchor, useGSAP } from '../lib/scroll'
 import { usePageMeta } from '../lib/usePageMeta'
 
 export default function Experience() {
   usePageMeta('Experience', 'Experience of Yra Climaco: i4NS, Data Science Student Society, and the Center for Community Energy.')
   const root = useRef(null)
+  const location = useLocation()
+
+  // Arriving at a specific role (/experience#ds3): go to it once the surface has opened.
+  useEffect(() => {
+    return arriveAtAnchor(location.hash.slice(1))
+  }, [location.hash])
 
   useGSAP(
     () => {
@@ -76,7 +82,7 @@ export default function Experience() {
         </div>
         <ol className="roles">
           {experience.map((job) => (
-            <li className={`role${job.current ? ' is-current' : ''}`} key={job.id}>
+            <li className={`role${job.current ? ' is-current' : ''}`} key={job.id} id={job.id}>
               <span className="role__dot" aria-hidden="true" />
               <div className="role__body">
                 <p className="role__when">

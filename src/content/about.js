@@ -1,3 +1,5 @@
+// About: background and goals. Skills live in content/skills.js and hobbies in content/beyond.js.
+
 // The main introduction, shown once (on About). Same words as profile.intro, split for reading.
 export const about = {
   paragraphs: [
@@ -6,33 +8,35 @@ export const about = {
   ],
 }
 
-export const skills = [
-  { group: 'Languages', items: ['Python', 'SQL'] },
-  {
-    group: 'Analytics',
-    items: ['Statistical analysis', 'Hypothesis testing', 'A/B testing', 'Permutation testing', 'Behavioral analysis', 'EDA', 'Data visualization'],
-  },
-  { group: 'Libraries', items: ['Pandas', 'NumPy', 'Scikit-learn', 'Matplotlib', 'Seaborn', 'Plotly'] },
-  {
-    group: 'Data & cloud',
-    items: ['PostgreSQL', 'ETL pipelines', 'Data cleaning', 'Data validation', 'GCP (Cloud Run, GCS)', 'AWS (S3, EC2, Lambda)'],
-  },
-  { group: 'Tools', items: ['Tableau', 'Excel', 'Git', 'Jupyter', 'VS Code'] },
+// Three highlights, each counted up once. Sources:
+//   GPA: profile.education.gpa
+//   303K+: SurfCast's 303,375 hourly rows (content/projects.js: "303,000+ hourly ocean observations")
+//   3rd place: TubeScope's DS3 Showcase result (content/projects.js: "Placed 3rd of 10 teams")
+export const highlights = [
+  { id: 'gpa', value: 3.82, decimals: 2, suffix: ' / 4.0', label: 'GPA at UC San Diego' },
+  { id: 'surfcast', value: 303, decimals: 0, suffix: 'K+', label: 'Ocean observations analyzed, SurfCast SD', to: '/projects/surfcast' },
+  { id: 'showcase', value: 3, ordinal: true, suffix: ' place', label: 'DS3 DinoCage Showcase, TubeScope', to: '/projects/tubescope' },
 ]
 
 export const certification = {
   name: 'AWS Certified Cloud Practitioner',
   issuer: 'Amazon Web Services',
-  date: 'Aug 2026',
+  date: 'August 2026',
 }
 
-export const interestsLine = 'Outside of data: Brazilian Jiu-Jitsu, board games, card magic, and trying new food.'
-
-// Interests on the About page. To use a real photo, set `image` (a path in /public) and describe it
-// in `alt`; the card then shows the photo in its image area instead of the suit mark.
-export const interests = [
-  { suit: '♠', title: 'Brazilian Jiu-Jitsu', note: 'It also became a dataset.', link: '/projects/adcc', linkLabel: 'See the ADCC analysis', image: null, alt: '' },
-  { suit: '♦', title: 'Board games', note: 'The reason this portfolio is a board.', image: null, alt: '' },
-  { suit: '♣', title: 'Card magic', note: 'Practicing sleight of hand.', image: null, alt: '' },
-  { suit: '♥', title: 'Trying new food', note: 'Always looking for the next place to try.', image: null, alt: '' },
+// Campus involvement: short entries that point to the fuller story elsewhere.
+export const involvement = [
+  {
+    id: 'ds3',
+    title: 'Data Science Student Society',
+    meta: 'Projects Mentor',
+    text: 'I mentor student teams through end-to-end data projects, from scoping the problem to communicating results. With a DS3 team, I also built TubeScope, which placed 3rd at the showcase.',
+    link: { label: 'Mentoring in Experience', to: '/experience#ds3' },
+  },
+  {
+    id: 'bjj',
+    title: 'UCSD BJJ Club',
+    text: 'I train Brazilian Jiu-Jitsu with the club, part of the campus grappling community.',
+    link: { label: 'More in Beyond Data', to: '/beyond-data#bjj' },
+  },
 ]

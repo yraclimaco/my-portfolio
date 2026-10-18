@@ -1,42 +1,43 @@
 import { useRef } from 'react'
 import { Link } from 'react-router-dom'
-import { about, certification, interests, interestsLine, skills } from '../content/about'
+import { about, certification, highlights, involvement } from '../content/about'
 import { profile } from '../content/profile'
-import { FINE_POINTER, MOTION_OK, finishIfStalled, gsap, panelScroller, refreshWhenSettled, revealOnce, useGSAP } from '../lib/scroll'
+import { session } from '../lib/session'
+import { MOTION_OK, ScrollTrigger, finishIfStalled, gsap, panelScroller, refreshWhenSettled, revealOnce, useGSAP } from '../lib/scroll'
 import { usePageMeta } from '../lib/usePageMeta'
 
-// Each interest has an image area. Until a real photo is added (image + alt in content/about.js),
-// it shows the card's suit as a small mark rather than an empty box.
-function InterestCard({ item }) {
+const COUNTED_KEY = 'yc:highlights-counted'
+
+const ordinal = (n) => {
+  const s = ['th', 'st', 'nd', 'rd']
+  const v = n % 100
+  return n + (s[(v - 20) % 10] || s[v] || s[0])
+}
+const format = (h, v) => (h.ordinal ? ordinal(Math.max(1, Math.round(v))) : v.toFixed(h.decimals ?? 0)) + (h.suffix ?? '')
+
+// A highlight number. The final value is always in the page: a hidden copy reserves its width (so
+// nothing shifts while counting), screen readers get it once, and the counting digits are hidden
+// from assistive technology.
+function Highlight({ h }) {
+  const final = format(h, h.value)
   return (
-    <li className="icard">
-      <div className="icard__media">
-        {item.image ? (
-          <img className="icard__photo" src={item.image} alt={item.alt} loading="lazy" decoding="async" />
-        ) : (
-          <span className="icard__mark" aria-hidden="true">
-            {item.suit}
-          </span>
-        )}
-      </div>
-      <div className="icard__text">
-        <h3 className="icard__title">{item.title}</h3>
-        <p>
-          {item.note}
-          {item.link && (
-            <>
-              {' '}
-              <Link to={item.link}>{item.linkLabel}</Link>
-            </>
-          )}
-        </p>
-      </div>
+    <li className="hl">
+      <p className="hl__value">
+        <span className="sr-only">{final}</span>
+        <span className="hl__ghost" aria-hidden="true">
+          {final}
+        </span>
+        <span className="hl__num" aria-hidden="true">
+          {final}
+        </span>
+      </p>
+      <p className="hl__label">{h.to ? <Link to={h.to}>{h.label}</Link> : h.label}</p>
     </li>
   )
 }
 
 export default function About() {
-  usePageMeta('About', 'About Yra Climaco: Data Science at UC San Diego, skills, and interests.')
+  usePageMeta('About', 'About Yra Climaco: Data Science at UC San Diego, background, and goals.')
   const root = useRef(null)
 
   useGSAP(
@@ -44,52 +45,51 @@ export default function About() {
       const scroller = panelScroller(root.current)
       const mm = gsap.matchMedia()
       mm.add(MOTION_OK, () => {
-        // The introduction arrives as one group; the rest reveal in small groups as they scroll in.
         const intro = gsap
           .timeline({ delay: 0.15 })
           .from('.about__portrait-img', { y: 18, opacity: 0, duration: 0.7, ease: 'power3.out' })
           .from('.about__copy > *', { y: 12, opacity: 0, duration: 0.5, stagger: 0.08, ease: 'power2.out' }, 0.05)
-        const offs = [
-          finishIfStalled(intro),
-          revealOnce('.fact', scroller),
-          revealOnce('.skills__group', scroller, { stagger: 0.05 }),
-          revealOnce('.icard', scroller, { stagger: 0.07 }),
-          refreshWhenSettled(root.current),
-        ]
-        return () => offs.forEach((f) => f())
-      })
-      // A small, tactile detail: interest cards tilt towards the pointer, the mark drifts a little.
-      mm.add(`${MOTION_OK} and ${FINE_POINTER}`, () => {
-        const off = []
-        gsap.utils.toArray('.icard', root.current).forEach((card) => {
-          const media = card.querySelector('.icard__media')
-          const rx = gsap.quickTo(card, 'rotationX', { duration: 0.45, ease: 'power3.out' })
-          const ry = gsap.quickTo(card, 'rotationY', { duration: 0.45, ease: 'power3.out' })
-          const mx = gsap.quickTo(media, 'x', { duration: 0.45, ease: 'power3.out' })
-          const my = gsap.quickTo(media, 'y', { duration: 0.45, ease: 'power3.out' })
-          const move = (e) => {
-            const r = card.getBoundingClientRect()
-            const px = (e.clientX - r.left) / r.width - 0.5
-            const py = (e.clientY - r.top) / r.height - 0.5
-            rx(-py * 6)
-            ry(px * 8)
-            mx(px * 6)
-            my(py * 6)
-          }
-          const leave = () => {
-            rx(0)
-            ry(0)
-            mx(0)
-            my(0)
-          }
-          card.addEventListener('pointermove', move)
-          card.addEventListener('pointerleave', leave)
-          off.push(() => {
-            card.removeEventListener('pointermove', move)
-            card.removeEventListener('pointerleave', leave)
+        const offs = [finishIfStalled(intro), revealOnce('.fact', scroller), revealOnce('.involve__item', scroller, { stagger: 0.07 }), refreshWhenSettled(root.current)]
+
+        // Count the highlights up once per visit, the first time they come into view.
+        if (session.get(COUNTED_KEY) !== '1' && scroller) {
+          const nums = gsap.utils.toArray('.hl__num', root.current)
+          const set = (v) => nums.forEach((el, i) => (el.textContent = format(highlights[i], highlights[i].value * v)))
+          set(0)
+          const proxy = { v: 0 }
+          // Marked as counted only once it finishes, so an interrupted count simply runs again.
+          const count = gsap.to(proxy, {
+            v: 1,
+            duration: 1.2,
+            ease: 'power2.out',
+            paused: true,
+            onUpdate: () => set(proxy.v),
+            onComplete: () => {
+              set(1)
+              session.set(COUNTED_KEY, '1')
+            },
           })
-        })
-        return () => off.forEach((f) => f())
+          ScrollTrigger.create({
+            trigger: root.current.querySelector('.highlights'),
+            scroller,
+            start: 'top 92%',
+            once: true,
+            onEnter: () => count.delay(0.25).play(),
+          })
+          // Never leave zeros on screen if the count cannot run (frames stalled, trigger missed):
+          // check on the wall clock, and only finish early what is actually visible.
+          const box = root.current.querySelector('.highlights')
+          const check = setInterval(() => {
+            const r = box.getBoundingClientRect()
+            const view = scroller.getBoundingClientRect()
+            const visible = r.top < view.bottom && r.bottom > view.top
+            if (visible && count.progress() < 1 && performance.now() - (box.__seenAt ??= performance.now()) > 2200) count.progress(1)
+            if (count.progress() === 1) clearInterval(check)
+          }, 400)
+          offs.push(() => clearInterval(check))
+          offs.push(() => set(1))
+        }
+        return () => offs.forEach((f) => f())
       })
     },
     { scope: root },
@@ -123,12 +123,21 @@ export default function About() {
               {t}
             </p>
           ))}
+          <p className="about__more">
+            See my <Link to="/skills">Skills</Link>, or what I do <Link to="/beyond-data">Beyond Data</Link>.
+          </p>
         </div>
       </div>
 
+      <ul className="highlights" aria-label="Highlights">
+        {highlights.map((h) => (
+          <Highlight key={h.id} h={h} />
+        ))}
+      </ul>
+
       <section className="block" aria-labelledby="facts-title">
         <h2 id="facts-title" className="section__h2">
-          Education
+          Education and certification
         </h2>
         <dl className="facts">
           <div className="fact">
@@ -136,11 +145,7 @@ export default function About() {
             <dd>
               <strong>{profile.education.school}</strong>
               <span>{profile.education.degree}</span>
-              <span className="muted">
-                GPA {profile.education.gpa}
-                <span aria-hidden="true"> · </span>
-                {profile.education.expected}
-              </span>
+              <span className="muted">{profile.education.expected}</span>
             </dd>
           </div>
           <div className="fact">
@@ -157,32 +162,20 @@ export default function About() {
         </dl>
       </section>
 
-      <section className="block" aria-labelledby="skills-title">
-        <h2 id="skills-title" className="section__h2">
-          Skills
+      <section className="block" aria-labelledby="involve-title">
+        <h2 id="involve-title" className="section__h2">
+          Campus involvement
         </h2>
-        <div className="skills__grid">
-          {skills.map((g) => (
-            <div className="skills__group" key={g.group}>
-              <h3>{g.group}</h3>
-              <ul className="chips">
-                {g.items.map((s) => (
-                  <li key={s}>{s}</li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="block" aria-labelledby="interests-title">
-        <h2 id="interests-title" className="section__h2">
-          Off the board
-        </h2>
-        <p className="block__lead">{interestsLine}</p>
-        <ul className="icards">
-          {interests.map((i) => (
-            <InterestCard key={i.title} item={i} />
+        <ul className="involve">
+          {involvement.map((x) => (
+            <li className="involve__item" key={x.id}>
+              <h3 className="involve__title">{x.title}</h3>
+              {x.meta && <p className="involve__meta">{x.meta}</p>}
+              <p className="involve__text">{x.text}</p>
+              <Link className="involve__link" to={x.link.to}>
+                {x.link.label}
+              </Link>
+            </li>
           ))}
         </ul>
       </section>

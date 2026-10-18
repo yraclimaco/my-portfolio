@@ -8,7 +8,9 @@ import { useGoHome } from '../lib/home'
 const links = [
   { to: '/projects', label: 'Projects' },
   { to: '/experience', label: 'Experience' },
+  { to: '/skills', label: 'Skills' },
   { to: '/about', label: 'About' },
+  { to: '/beyond-data', label: 'Beyond Data' },
   { to: '/contact', label: 'Contact' },
 ]
 

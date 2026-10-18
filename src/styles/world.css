@@ -118,10 +118,11 @@
     var(--shadow-lift);
 }
 
+/* With six labels around the centre, the one instruction sits at the bottom of the board. */
 .hint3d {
   position: absolute;
-  left: 0;
-  top: 0;
+  left: 50%;
+  bottom: calc(clamp(1rem, 4vh, 2rem) + env(safe-area-inset-bottom));
   transition: opacity var(--t-hover) var(--ease);
 }
 
@@ -134,7 +135,7 @@
   color: var(--paper);
   background: rgb(59 49 41 / 0.78);
   border-radius: 999px;
-  transform: translate(-50%, -50%);
+  transform: translateX(-50%);
 }
 
 .hint3d.is-away {
@@ -142,12 +143,8 @@
 }
 
 @media (max-width: 599px) {
-  .dest3d .dest__sub {
-    display: none;
-  }
-
   .dest3d .dest__plaque {
-    padding: 0.32rem 0.8rem 0.38rem;
+    padding: 0.32rem 0.7rem 0.38rem;
   }
 
   .dest3d .dest__label {

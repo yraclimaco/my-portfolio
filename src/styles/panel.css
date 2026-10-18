@@ -201,6 +201,10 @@
   background: var(--sage);
 }
 
+.panel__tab--orchard .panel__tab-dot {
+  background: var(--peach);
+}
+
 .panel__tab--forest .panel__tab-dot {
   background: var(--sage-dark);
 }
@@ -583,124 +587,119 @@
   line-height: 1.35;
 }
 
-.skills__grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
-  gap: 1.5rem 2rem;
-}
-
-.skills__group {
-  min-width: 0;
-}
-
-.skills__group h3 {
-  margin-bottom: 0.55rem;
+.about__more {
+  margin-top: 1.1rem;
   font-size: 1rem;
-  font-weight: 650;
-  color: var(--terracotta-ink);
+  color: var(--muted);
 }
 
-.chips li {
-  transition: background-color var(--t-hover) var(--ease);
+.about__more a {
+  color: var(--sage-ink);
+  font-weight: 600;
 }
 
-.skills__group .chips li:hover {
-  background: var(--sage-mist);
-}
+/* ---------- About: three highlights ---------- */
 
-/* Interest cards: natural height and wrapping text, with one consistent image area per card.
-   The image area holds the suit mark now and a photo later (see content/about.js). */
-.icards {
+.highlights {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
   gap: 1rem;
-  perspective: 900px;
+  margin-top: clamp(2.25rem, 5vw, 3rem);
 }
 
-.icard {
-  display: grid;
-  grid-template-rows: auto 1fr;
+.hl {
   min-width: 0;
-  overflow: hidden;
+  padding: 1.15rem 1.3rem 1.25rem;
   background: var(--cream);
   border-radius: var(--r-md);
-  transition:
-    background-color var(--t-hover) var(--ease),
-    box-shadow var(--t-hover) var(--ease);
+  border-top: 3px solid var(--sage-dark);
 }
 
-.icard:hover {
-  background: #f4ead8;
-  box-shadow: var(--shadow-soft);
+.hl:nth-child(2) {
+  border-top-color: var(--coast-deep);
 }
 
-.icard__media {
+.hl:nth-child(3) {
+  border-top-color: var(--terracotta);
+}
+
+/* The hidden final value and the counting digits share one grid cell, so the width is reserved
+   from the start and nothing moves while it counts. */
+.hl__value {
   display: grid;
-  place-items: center;
-  aspect-ratio: 16 / 9;
-  background:
-    radial-gradient(circle at 30% 30%, rgb(255 255 255 / 0.55), transparent 60%),
-    linear-gradient(135deg, rgb(242 212 138 / 0.4), rgb(185 205 160 / 0.4));
+  font-size: clamp(1.8rem, 1.4rem + 1.4vw, 2.4rem);
+  font-weight: 650;
+  line-height: 1.1;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
 }
 
-.icard:nth-child(2) .icard__media {
-  background:
-    radial-gradient(circle at 30% 30%, rgb(255 255 255 / 0.55), transparent 60%),
-    linear-gradient(135deg, rgb(235 192 166 / 0.45), rgb(242 212 138 / 0.35));
+.hl__ghost,
+.hl__num {
+  grid-area: 1 / 1;
+  overflow-wrap: anywhere;
 }
 
-.icard:nth-child(3) .icard__media {
-  background:
-    radial-gradient(circle at 30% 30%, rgb(255 255 255 / 0.55), transparent 60%),
-    linear-gradient(135deg, rgb(180 208 210 / 0.5), rgb(185 205 160 / 0.35));
+.hl__ghost {
+  visibility: hidden;
 }
 
-.icard:nth-child(4) .icard__media {
-  background:
-    radial-gradient(circle at 30% 30%, rgb(255 255 255 / 0.55), transparent 60%),
-    linear-gradient(135deg, rgb(212 146 122 / 0.35), rgb(235 192 166 / 0.4));
+.hl__label {
+  margin-top: 0.4rem;
+  font-size: 0.95rem;
+  line-height: 1.45;
+  color: var(--muted);
 }
 
-.icard__photo {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.hl__label a {
+  color: var(--sage-ink);
+  font-weight: 600;
+  text-decoration-color: rgb(79 110 81 / 0.35);
+  text-underline-offset: 3px;
 }
 
-.icard__mark {
+/* ---------- About: campus involvement ---------- */
+
+.involve {
   display: grid;
-  place-items: center;
-  width: 3rem;
-  height: 3rem;
-  font-size: 1.45rem;
-  line-height: 1;
-  color: var(--terracotta-ink);
-  background: rgb(253 248 238 / 0.85);
-  border-radius: 50%;
-  box-shadow: var(--shadow-soft);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  gap: 1rem 2.5rem;
 }
 
-.icard__text {
+.involve__item {
   min-width: 0;
-  padding: 1rem 1.15rem 1.15rem;
+  padding-left: 1rem;
+  border-left: 3px solid var(--butter);
 }
 
-.icard__title {
-  margin-bottom: 0.25rem;
-  font-size: 1.05rem;
+.involve__item + .involve__item {
+  border-left-color: var(--sage);
+}
+
+.involve__title {
+  font-size: 1.12rem;
   font-weight: 650;
   line-height: 1.3;
 }
 
-.icard p {
-  font-size: 0.98rem;
-  line-height: 1.5;
+.involve__meta {
+  margin-top: 0.1rem;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--terracotta-ink);
+}
+
+.involve__text {
+  margin: 0.5rem 0 0.6rem;
   color: var(--muted);
 }
 
-.icard a {
-  color: var(--sage-ink);
+.involve__link {
+  display: inline-flex;
+  min-height: 32px;
+  align-items: center;
   font-weight: 600;
+  color: var(--sage-ink);
 }
 
 /* ---------- Contact: the email up top, three tiles below, filling the surface ---------- */
