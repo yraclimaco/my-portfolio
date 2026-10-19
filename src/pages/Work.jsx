@@ -40,7 +40,7 @@ function ProjectCard({ p }) {
           <span className="pcard__line" id={`pcard-line-${p.slug}`}>
             {p.subtitle}
           </span>
-          <span className="pcard__meta">{p.dates}</span>
+          {p.dates && <span className="pcard__meta">{p.dates}</span>}
         </span>
       </Link>
     </li>
@@ -54,7 +54,7 @@ function Gallery({ notFound }) {
         <h1 id="panel-title" className="section__title" tabIndex={-1}>
           Projects
         </h1>
-        <p className="section__lead">Four projects in surf forecasting, esports, YouTube trends, and grappling. Choose one for the full story.</p>
+        <p className="section__lead">Five projects in NBA shot modeling, surf forecasting, esports, YouTube trends, and grappling. Choose one for the full story.</p>
         {notFound && <p className="section__notice">I couldn’t find that project, so here are all of them instead.</p>}
       </header>
       <ul className="pgrid" aria-label="Projects">
@@ -88,10 +88,10 @@ function Results({ findings }) {
         <div className={`result result--${f.type}`} key={f.stat + f.text}>
           <span className="result__bar" aria-hidden="true" />
           <dt>
-            <EvidenceTag type={f.type} />
-            <span className="result__stat">{f.stat}</span>
+            <EvidenceTag type={f.type} /> <span className="result__stat">{f.stat}</span>
           </dt>
           <dd>{f.text}</dd>
+          {f.note && <dd className="result__note">{f.note}</dd>}
         </div>
       ))}
     </dl>
@@ -170,8 +170,12 @@ function ProjectDetail({ p, onBack }) {
       <header className="pdetail__head">
         <p className="pdetail__meta">
           {p.context}
-          <span aria-hidden="true"> · </span>
-          {p.dates}
+          {p.dates && (
+            <>
+              <span aria-hidden="true"> · </span>
+              {p.dates}
+            </>
+          )}
         </p>
         <h1 id="panel-title" className="section__title" tabIndex={-1}>
           {p.title}
@@ -185,6 +189,16 @@ function ProjectDetail({ p, onBack }) {
           ))}
         </div>
       </header>
+
+      {p.metrics && (
+        <ul className="pmetrics" aria-label="Key numbers">
+          {p.metrics.map((m) => (
+            <li key={m.label}>
+              <span className="pmetrics__value">{m.value}</span> <span className="pmetrics__label">{m.label}</span>
+            </li>
+          ))}
+        </ul>
+      )}
 
       <div className="pdetail__hero">
         <Figure figure={p.figures[0]} />
@@ -208,7 +222,7 @@ function ProjectDetail({ p, onBack }) {
 
         <section id="pd-contribution" className="pblock">
           <h2 tabIndex={-1}>My contribution</h2>
-          <p className="pblock__note">{p.contribution.team ? 'A team project. My part:' : 'A solo project. I did all of the work below.'}</p>
+          <p className="pblock__note">{p.contribution.note ?? (p.contribution.team ? 'A team project. My part:' : 'A solo project. I did all of the work below.')}</p>
           <Bullets items={p.contribution.items} />
         </section>
 
@@ -240,16 +254,33 @@ function ProjectDetail({ p, onBack }) {
         <section id="pd-results" className="pblock">
           <h2 tabIndex={-1}>Results</h2>
           <Results findings={p.findings} />
-          <div className="impact-row">
-            <EvidenceTag type="impact" />
-            <p className="impact">{p.findings.impact}</p>
-          </div>
+          {p.findings.impact && (
+            <div className="impact-row">
+              <EvidenceTag type="impact" />
+              <p className="impact">{p.findings.impact}</p>
+            </div>
+          )}
           {p.table && <DataTable table={p.table} />}
-          <h3>What this could inform</h3>
-          <Bullets items={p.couldInform} />
-          <h3>Limitations</h3>
-          <Bullets items={p.limitations} />
+          {p.couldInform && (
+            <>
+              <h3>What this could inform</h3>
+              <Bullets items={p.couldInform} />
+            </>
+          )}
+          {p.limitations && (
+            <>
+              <h3>Limitations</h3>
+              <Bullets items={p.limitations} />
+            </>
+          )}
         </section>
+
+        {p.learned && (
+          <section id="pd-learned" className="pblock">
+            <h2 tabIndex={-1}>What I learned</h2>
+            <p>{p.learned}</p>
+          </section>
+        )}
 
         {hasVisuals && (
           <section id="pd-visuals" className="pblock pblock--wide">

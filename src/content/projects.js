@@ -6,6 +6,71 @@
 
 export const projects = [
   {
+    slug: 'nba-shot-model',
+    thumb: { src: '/work/nba/thumb.webp', width: 960, height: 540 },
+    number: '05',
+    featured: true,
+    tile: { label: 'Shot model', sub: 'Basketball analytics' },
+    title: 'NBA Shot Make Probability Model',
+    subtitle: 'Estimating how likely an NBA shot is to go in',
+    context: 'Individual technical project',
+    kind: 'Probabilistic modeling · Ensemble · Model validation',
+    summary:
+      'A probabilistic model that estimates NBA shot make probability from player-tracking and shot-context features across 425K+ training shots.',
+    headline: { value: '0.6245', label: 'Cross-season validation log loss (my own development score)', type: 'model' },
+    metrics: [
+      { value: '425K+', label: 'training shots' },
+      { value: '0.6245', label: 'validation log loss' },
+      { value: '3-model', label: 'ensemble' },
+    ],
+    links: [],
+    stack: ['Python', 'Scikit-learn', 'LightGBM', 'CatBoost', 'Pandas/Polars', 'Feature Engineering', 'Model Validation'],
+    question: 'How well can player-tracking and shot-context data estimate the chance that a shot goes in, including in a season the model has never seen?',
+    contribution: {
+      note: 'My own modeling work:',
+      items: [
+        'Built and evaluated probabilistic models across 425K+ NBA training shots using player-tracking and shot-context features.',
+        'Designed cross-season validation to test generalization to an unseen season instead of relying on a random row split.',
+        'Compared multiple modeling approaches and combined HistGradientBoosting, LightGBM, and CatBoost into the final ensemble.',
+      ],
+    },
+    data: [
+      'Player-tracking and shot-context features: shot distance, shot type, defender proximity, shot clock, court location, shooter movement, and contest information.',
+      'The supplied dataset is not shared on this site.',
+    ],
+    approach: [
+      { title: 'Validate on a new season', text: 'Used season-based validation instead of a random split to better test generalization to a new season.' },
+      { title: 'Model shot difficulty', text: 'Engineered features describing the shot, the shooter’s movement, and how closely the shot was contested.' },
+      { title: 'Compare and ensemble', text: 'Started from a logistic regression baseline, then combined HistGradientBoosting, LightGBM, and CatBoost.' },
+    ],
+    findings: {
+      model: [
+        {
+          stat: '0.6245',
+          text: 'Improved cross-season validation log loss from 0.6414 with logistic regression to 0.6245 with the final three-model ensemble.',
+          note: 'This is my own development validation score, not an official Thunder evaluation.',
+        },
+      ],
+      finding: [
+        {
+          stat: 'Distance + shot type',
+          text: 'Shot distance and shot type were the strongest features in the LightGBM component. This reflects what the model relied on, not a causal relationship.',
+        },
+      ],
+    },
+    learned:
+      'During review, I found and corrected issues in my validation process, reinforcing the importance of fair model comparisons and leakage prevention.',
+    figures: [
+      {
+        src: '/work/nba/validation.webp',
+        width: 1000,
+        height: 640,
+        alt: 'Two cards comparing cross-season validation log loss, where lower is better: logistic regression baseline at 0.6414 and the three-model ensemble, the best result, at 0.6245, an improvement of 0.0169.',
+        caption: 'Validation performance comparison from my development analysis. Not an official Thunder evaluation.',
+      },
+    ],
+  },
+  {
     slug: 'surfcast',
     // Gallery card image (title card); the project's own screenshots and charts stay in the detail view.
     thumb: { src: '/work/surfcast/thumb.webp', width: 960, height: 540 },
