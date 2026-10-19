@@ -13,6 +13,7 @@ export const projects = [
     tile: { label: 'Shot model', sub: 'Basketball analytics' },
     title: 'NBA Shot Make Probability Model',
     subtitle: 'Estimating how likely an NBA shot is to go in',
+    dates: 'Sept 2026',
     context: 'Individual technical project',
     kind: 'Probabilistic modeling · Ensemble · Model validation',
     summary:
