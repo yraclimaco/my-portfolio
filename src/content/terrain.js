@@ -2,24 +2,24 @@
 // Motifs are drawn for a hexagon of circumradius 100 and scaled per tile.
 
 export const fills = {
-  wheat: ['#f7dea0', '#ecc876'],
-  hills: ['#e2aa91', '#d08d74'],
-  pasture: ['#cddcb5', '#b3c899'],
-  forest: ['#a6c2a2', '#88a986'],
-  orchard: ['#f2cfb9', '#e3b398'],
-  desert: ['#f9eed4', '#eddcb6'],
-  sea: ['#c4dbdc', '#a9c7ca'],
-  sea2: ['#bed7d9', '#a2c1c5'],
+  wheat: ['#fcd774', '#f1bb42'],
+  hills: ['#f2ab90', '#df8267'],
+  pasture: ['#d6eaa4', '#bddb88'],
+  forest: ['#8fc67e', '#6aa862'],
+  mountains: ['#ccd5de', '#acb8c6'],
+  desert: ['#fcf2da', '#f2e4c0'],
+  sea: ['#bde6e2', '#93d2d0'],
+  sea2: ['#b5e1de', '#8acbca'],
 }
 
 export const glyphInk = {
   sea: { color: '#fdfbf4', opacity: 0.5 },
-  forest: { color: '#5f8461', opacity: 0.55 },
-  wheat: { color: '#c79a45', opacity: 0.5 },
-  hills: { color: '#a8634a', opacity: 0.45 },
-  pasture: { color: '#fdfbf4', opacity: 0.85 },
-  orchard: { color: '#c98d70', opacity: 0.6 },
-  desert: { color: '#d4b783', opacity: 0.65 },
+  forest: { color: '#4d8a52', opacity: 0.55 },
+  wheat: { color: '#b98621', opacity: 0.5 },
+  hills: { color: '#b4553d', opacity: 0.45 },
+  pasture: { color: '#fffdf6', opacity: 0.9 },
+  mountains: { color: '#76879a', opacity: 0.55 },
+  desert: { color: '#d8bf8c', opacity: 0.6 },
 }
 export const DEST_GLYPH_OPACITY = 0.3
 
@@ -52,12 +52,10 @@ export const glyphs = {
     { d: circle(25, -21, 4) },
     { d: ellipse(-26, 26, 8, 5.6), opacity: 0.8 },
   ],
-  orchard: [
-    { d: circle(-22, -6, 15) },
-    { d: circle(16, -18, 13) },
-    { d: circle(22, 22, 12), opacity: 0.85 },
-    { d: 'M-22 9v13M16-5v12M22 34v9', stroke: 3 },
-    { d: circle(-27, -10, 2.4) + circle(-16, -2, 2.4) + circle(12, -22, 2.2) + circle(25, 19, 2.2), color: '#fdf8ee', opacity: 0.8 },
+  mountains: [
+    { d: 'M-54 36L-26-12c1.2-2 3.6-2 4.8 0L8 36z' },
+    { d: 'M-8 42L24-32c1.2-2.4 3.6-2.4 4.8 0L60 42z' },
+    { d: 'M14-6L24-32c1.2-2.4 3.6-2.4 4.8 0L38-6L31-10L26-4L21-10z', color: '#fdf8ee', opacity: 0.9 },
   ],
   desert: [
     { d: 'M-56 34c20-12 44-12 64 0', stroke: 2.4 },

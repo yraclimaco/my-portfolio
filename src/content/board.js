@@ -9,7 +9,7 @@ export const DIRS = { E: [1, 0], NE: [1, -1], NW: [0, -1], W: [-1, 0], SW: [-1, 
 export const destinations = [
   { id: 'work', label: 'Projects', to: '/projects', at: 'NW', terrain: 'wheat' },
   { id: 'experience', label: 'Experience', to: '/experience', at: 'NE', terrain: 'hills' },
-  { id: 'skills', label: 'Skills', to: '/skills', at: 'E', terrain: 'orchard' },
+  { id: 'skills', label: 'Skills', to: '/skills', at: 'E', terrain: 'mountains' },
   { id: 'about', label: 'About', to: '/about', at: 'SW', terrain: 'pasture' },
   { id: 'beyond-data', label: 'Beyond Data', to: '/beyond-data', at: 'W', terrain: 'forest' },
   { id: 'contact', label: 'Contact', to: '/contact', at: 'SE', terrain: 'forest' },
@@ -20,8 +20,8 @@ export const HOME = 'home'
 // Ring one is all destinations; ring two runs clockwise from due east.
 export const ringOneTerrain = {}
 export const ringTwoTerrain = [
-  'pasture', 'wheat', 'forest', 'hills', 'orchard', 'pasture',
-  'wheat', 'forest', 'orchard', 'hills', 'pasture', 'wheat',
+  'pasture', 'wheat', 'forest', 'hills', 'mountains', 'pasture',
+  'wheat', 'forest', 'mountains', 'hills', 'pasture', 'wheat',
 ]
 
 const dirKey = Object.fromEntries(Object.entries(DIRS).map(([k, [q, r]]) => [`${q},${r}`, k]))

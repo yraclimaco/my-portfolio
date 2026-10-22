@@ -4,6 +4,7 @@
 // Ownership of animated properties (so nothing fights):
 //   GSAP     lid, camera rig, environment mix, interior light, tiles, robber, intro overlay opacity
 //   ticker   pointer tilt + hover lift (intro only), dust mote drift (intro only)
+//   drift    (atmosphere.js) wind trails and leaves, board only, GSAP-driven and paused behind content
 import {
   AdditiveBlending,
   BufferAttribute,
@@ -41,6 +42,7 @@ import gsap from 'gsap'
 import { HOME, destinations, islandTiles } from '../content/board'
 import { fills } from '../content/terrain'
 import { SQRT3, pointInHex } from '../lib/hex'
+import { buildDetails, createDrift } from './atmosphere'
 import { drawBoard, drawContactShadow, drawLid, drawPaper, drawSoftDot, drawTileTop } from './textures'
 import { fontsReady, hexShape, robberGeometry, tileUV, wallRing } from './geometry'
 
@@ -50,7 +52,7 @@ const BASE = { w: 24, d: 17, h: 2.8, wall: 0.26 }
 const LID = { w: 24.4, d: 17.4, h: 1.5, top: 0.28, wall: 0.2 }
 const CORNER = 0.2
 const INSERT_Y = 1.6
-const TILE = { r: 0.93, round: 0.22, depth: 0.08, bevel: 0.025 }
+const TILE = { r: 0.93, round: 0.15, depth: 0.08, bevel: 0.025 }
 const TILE_BASE_Y = INSERT_Y + TILE.bevel
 const TILE_TOP = INSERT_Y + TILE.depth + TILE.bevel * 2
 const LID_CLOSED_Y = BASE.h + 0.02 - LID.h + LID.top
@@ -73,7 +75,7 @@ const LABEL_SPREAD = 1.22
 
 const ENV = {
   intro: { c: '#4b4433', m: '#1f2d2a', e: '#0f1817', sky: '#7f9893', ground: '#2b2a22', hemi: 0.42, key: 0.5, pool: 2.5 },
-  board: { c: '#e2eae5', m: '#cfdcd7', e: '#bdcdc9', sky: '#ffffff', ground: '#cbbd9f', hemi: 1.4, key: 2.0, pool: 0 },
+  board: { c: '#e4f4f1', m: '#cdebe7', e: '#b4dcd8', sky: '#fffdf8', ground: '#d8d0bc', hemi: 1.4, key: 2.0, pool: 0 },
 }
 
 const tiles = islandTiles()
@@ -144,12 +146,13 @@ export async function createWorld({
   // ---------- Lights. On the board, hemisphere + key on upward faces = PI, so prints read true.
   const hemi = new HemisphereLight(ENV.intro.sky, ENV.intro.ground, ENV.intro.hemi)
   scene.add(hemi)
-  const key = new DirectionalLight(0xfff7ea, ENV.intro.key)
+  const key = new DirectionalLight(0xfff6e6, ENV.intro.key) // soft daylight, a touch warm
   key.position.set(-9, 26, 11)
   key.castShadow = true
   key.shadow.mapSize.set(small ? 1024 : 2048, small ? 1024 : 2048)
   Object.assign(key.shadow.camera, { left: -18, right: 18, top: 18, bottom: -18, near: 4, far: 70 })
   key.shadow.bias = -0.0004
+  key.shadow.radius = 4 // softer, more diffuse shadow edges where the renderer supports it
   key.shadow.normalBias = 0.03
   scene.add(key)
   // The warm pool the box sits in.
@@ -253,8 +256,11 @@ export async function createWorld({
   const tileMeshes = []
   const destMeshes = {}
   for (const t of tiles) {
-    const k = `${t.terrain}${t.dest ? ':d' : ''}`
-    if (!topMats.has(k)) topMats.set(k, new MeshLambertMaterial({ map: tex(drawTileTop(t.terrain, t.dest), { aniso: 4 }) }))
+    // Destinations carry a faint printed motif; the outer ring has 3D scenery instead, so those
+    // tiles stay plain rather than drawing the same thing twice.
+    const motif = t.dest ? 'quiet' : t.d === 2 ? 'none' : 'full'
+    const k = `${t.terrain}:${motif}`
+    if (!topMats.has(k)) topMats.set(k, new MeshLambertMaterial({ map: tex(drawTileTop(t.terrain, motif), { aniso: 4 }) }))
     if (!sideMats.has(t.terrain)) sideMats.set(t.terrain, new MeshLambertMaterial({ color: new Color(fills[t.terrain][1]).multiplyScalar(0.86) }))
     const m = new Mesh(tileGeo, [topMats.get(k), sideMats.get(t.terrain)])
     const p = tileXZ(t)
@@ -266,6 +272,10 @@ export async function createWorld({
     slide.add(m)
   }
 
+  // Soft terrain details on the outer ring. They ride on their tiles and grow in as the island rises.
+  const softDot = tex(drawSoftDot(64, 0.15), { color: false })
+  const details = buildDetails({ tiles, tileMeshes, localTop: TILE.depth + TILE.bevel, startScale: opened ? 1 : 0.001, shadowMap: softDot })
+
   // ---------- Robber: root (board position) > lift (pickup, tilt and wobble, pivoting on its base).
   const robberRoot = new Group()
   const lift = new Group()
@@ -274,7 +284,7 @@ export async function createWorld({
   lift.add(robber)
   const blob = new Mesh(
     new PlaneGeometry(0.62, 0.62),
-    new MeshBasicMaterial({ map: tex(drawSoftDot(64, 0.15), { color: false }), color: '#2b1c10', transparent: true, opacity: 0.38, depthWrite: false }),
+    new MeshBasicMaterial({ map: softDot, color: '#2b1c10', transparent: true, opacity: 0.38, depthWrite: false }),
   )
   blob.rotation.x = -Math.PI / 2
   blob.position.y = 0.004
@@ -337,6 +347,9 @@ export async function createWorld({
   motes.visible = !opened && MOTES > 0
   scene.add(motes)
 
+  // ---------- Drift: a few wind trails and leaves over the board (never under reduced motion).
+  const drift = reduced ? null : createDrift({ parent: slide, makeTexture: tex, small, baseY: TILE_TOP, swayers: details.map((h) => h.pivot), water: { y: INSERT_Y + 0.004, w: insW, d: insD } })
+
   // ---------- Environment mix: 0 = quiet intro table, 1 = calm board. One setter, one owner (GSAP).
   const cA = new Color()
   const cB = new Color()
@@ -352,6 +365,7 @@ export async function createWorld({
     hemi.color.set(I.sky).lerp(cB.set(B.sky), t)
     hemi.groundColor.set(I.ground).lerp(cB.set(B.ground), t)
     key.intensity = I.key + (B.key - I.key) * t
+    key.shadow.intensity = 1 - 0.32 * t // gentler shadows once the board is in daylight
     pool.intensity = I.pool + (B.pool - I.pool) * t
     scene.fog.near = 400 + (fogNear - 400) * t
     scene.fog.far = 800 + (fogFar - 800) * t
@@ -465,8 +479,9 @@ export async function createWorld({
     const padX = narrow ? 0 : Math.max(W * 0.05, 24)
     const rect = { x: padX, y: top, w: W - padX * 2, h: H - top - bottom }
     const pose = fit({ yaw: 0, pitch: portrait ? BOARD_PITCH_PORTRAIT : BOARD_PITCH, ty: TILE_TOP }, narrow ? innerHull : islandHull, rect)
-    fogNear = pose.dist * 1.05
-    fogFar = pose.dist * 2.1
+    // Distance haze only begins well beyond the island, so the sea stays clean.
+    fogNear = pose.dist * 2.2
+    fogFar = pose.dist * 5
     return pose
   }
 
@@ -504,6 +519,8 @@ export async function createWorld({
   let hoverTarget = 0
   const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches
   const moteAttr = moteGeo.getAttribute('position')
+  let lastDecor = 0
+  const decorGap = small ? 1000 / 24 : 1000 / 36
 
   const render = () => {
     renderer.render(scene, camera)
@@ -518,7 +535,15 @@ export async function createWorld({
     // Behind the content only finishing moves are drawn (e.g. the robber travelling to the
     // chosen destination); everything else waits.
     if (paused && performance.now() >= busyUntil) return
-    let draw = dirty || active !== null || performance.now() < busyUntil
+    const now = performance.now()
+    let draw = dirty || active !== null || now < busyUntil
+    // Wind and leaves redraw at a relaxed rate; the shadow map is reused for those frames.
+    let decorOnly = false
+    if (drift?.running && phase === 'board' && drift.consumeDirty() && now - lastDecor >= decorGap) {
+      lastDecor = now
+      decorOnly = !draw
+      draw = true
+    }
     if (phase !== 'board') {
       const ease = phase === 'intro' ? 0.09 : 0.22
       const dyaw = tiltTarget.x * 0.07 - tilt.rotation.y
@@ -544,7 +569,9 @@ export async function createWorld({
     if (!draw) return
     dirty = false
     if (active) applyRig()
+    renderer.shadowMap.autoUpdate = !decorOnly
     render()
+    renderer.shadowMap.autoUpdate = true
   }
 
   const resize = () => {
@@ -585,6 +612,11 @@ export async function createWorld({
       gsap.killTweensOf(m.position)
       m.position.y = TILE_BASE_Y
     }
+    for (const h of details) {
+      gsap.killTweensOf(h.holder.scale)
+      h.holder.scale.setScalar(1)
+    }
+    drift?.show(!paused)
     gsap.killTweensOf(robberRoot.position)
     robberRoot.position.y = TILE_TOP
     Object.assign(rig, boardPose())
@@ -650,6 +682,10 @@ export async function createWorld({
     for (const m of tileMeshes) {
       active.to(m.position, { y: TILE_BASE_Y, duration: 0.42, ease: 'back.out(1.6)' }, 0.42 + m.userData.tile.d * 0.09)
     }
+    // Trees, hills and wheat settle in just after the tile beneath them.
+    for (const h of details) {
+      active.to(h.holder.scale, { x: 1, y: 1, z: 1, duration: 0.5, ease: 'back.out(1.7)' }, 0.62 + h.d * 0.09)
+    }
     active.to(robberRoot.position, { y: TILE_TOP, duration: 0.36, ease: 'back.out(2)' }, 0.92)
   }
 
@@ -667,6 +703,11 @@ export async function createWorld({
       gsap.killTweensOf(m.position)
       m.position.y = TILE_BASE_Y - SUNK
     }
+    for (const h of details) {
+      gsap.killTweensOf(h.holder.scale)
+      h.holder.scale.setScalar(0.001)
+    }
+    drift?.hide()
     robberTl?.kill()
     gsap.killTweensOf(robberRoot.position)
     const p = restOf(robberAtNow)
@@ -696,6 +737,7 @@ export async function createWorld({
       active = null
     }
     settleSlide()
+    drift?.hide()
     finish(false)
     setHot(null)
     setLabelState('data-target', [])
@@ -1088,7 +1130,8 @@ export async function createWorld({
     robberTl?.kill()
     slideTl?.kill()
     clearTimeout(pulseTimer)
-    gsap.killTweensOf([...tileMeshes.map((m) => m.position), robberRoot.position, lift.position, lift.rotation, lift.scale, blob.scale, blobMat])
+    drift?.dispose()
+    gsap.killTweensOf([...details.map((h) => h.holder.scale), ...tileMeshes.map((m) => m.position), robberRoot.position, lift.position, lift.rotation, lift.scale, blob.scale, blobMat])
     gsap.ticker.remove(tick)
     ro.disconnect()
     window.removeEventListener('pointermove', onMove)
@@ -1128,6 +1171,10 @@ export async function createWorld({
       paused = p
       if (!p) dirty = true
       if (p) finish(false)
+      if (phase === 'board') {
+        if (p) drift?.pause()
+        else drift?.resume()
+      }
     },
     relayout: () => resize(),
     dispose,
@@ -1143,6 +1190,8 @@ export async function createWorld({
             render()
           },
           home: HOME,
+          drift,
+          draw: () => render(),
           slide(t) {
             slideTl?.pause().seek(t)
             render()

@@ -18,9 +18,9 @@
 }
 
 .world3d.is-board {
-  --bg-c: #e2eae5;
-  --bg-m: #cfdcd7;
-  --bg-e: #bdcdc9;
+  --bg-c: #e4f4f1;
+  --bg-m: #cdebe7;
+  --bg-e: #b4dcd8;
 }
 
 /* A whisper of grain so the dark reads as a surface, not a void. */
@@ -32,6 +32,12 @@
   background: var(--paper-grain);
   opacity: 0.55;
   pointer-events: none;
+  transition: opacity 700ms var(--ease);
+}
+
+/* In daylight the board's colours are shown as they are: no film over the scene. */
+.world3d.is-board::after {
+  opacity: 0;
 }
 
 .world3d__scene {

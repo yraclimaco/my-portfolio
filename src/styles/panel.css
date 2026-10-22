@@ -201,8 +201,8 @@
   background: var(--sage);
 }
 
-.panel__tab--orchard .panel__tab-dot {
-  background: var(--peach);
+.panel__tab--mountains .panel__tab-dot {
+  background: #acb8c6;
 }
 
 .panel__tab--forest .panel__tab-dot {

@@ -3,7 +3,7 @@
 import { islandTiles } from '../content/board'
 import { DEST_GLYPH_OPACITY, fills, glyphFor, glyphInk, glyphs } from '../content/terrain'
 import { profile } from '../content/profile'
-import { SQRT3, hash, hexDistance, roundedHexPath } from '../lib/hex'
+import { SQRT3, hash, roundedHexPath } from '../lib/hex'
 import { ROBBER_COLORS, ROBBER_OUTLINE } from '../lib/robberShape'
 
 const FONT = '"Manrope Variable", "Segoe UI", system-ui, sans-serif'
@@ -49,6 +49,13 @@ function drawGlyph(ctx, terrain, x, y, s, opacity) {
   ctx.restore()
 }
 
+// A hex colour part-way between two others.
+function mix(a, b, t) {
+  const pa = [1, 3, 5].map((i) => parseInt(a.slice(i, i + 2), 16))
+  const pb = [1, 3, 5].map((i) => parseInt(b.slice(i, i + 2), 16))
+  return `rgb(${pa.map((v, i) => Math.round(v + (pb[i] - v) * t)).join(' ')})`
+}
+
 function hexAt(ctx, path, x, y, fill) {
   ctx.save()
   ctx.translate(x, y)
@@ -78,27 +85,39 @@ function grain(ctx, w, h, alpha) {
   ctx.restore()
 }
 
+// The sea: one continuous turquoise surface. Broad, soft patches of lighter and deeper water
+// give it a quiet variation; nothing is drawn as a pattern or a cell.
+function paintSea(ctx, w, h, s) {
+  const base = ctx.createLinearGradient(0, 0, w * 0.5, h)
+  base.addColorStop(0, mix(fills.sea[0], fills.sea[1], 0.38))
+  base.addColorStop(0.55, mix(fills.sea[0], fills.sea[1], 0.6))
+  base.addColorStop(1, mix(fills.sea2[0], fills.sea2[1], 0.7))
+  ctx.fillStyle = base
+  ctx.fillRect(0, 0, w, h)
+  const count = Math.round((w * h) / (s * s * 16))
+  for (let i = 0; i < count; i++) {
+    const x = hash(i * 3 + 1, 11) * w
+    const y = hash(i * 5 + 2, 29) * h
+    const r = s * (2.2 + hash(i, 53) * 3.2)
+    const light = i % 2 === 0
+    const g = ctx.createRadialGradient(x, y, 0, x, y, r)
+    g.addColorStop(0, light ? 'rgb(222 250 244 / 0.13)' : 'rgb(72 168 174 / 0.14)')
+    g.addColorStop(1, light ? 'rgb(222 250 244 / 0)' : 'rgb(72 168 174 / 0)')
+    ctx.fillStyle = g
+    ctx.fillRect(x - r, y - r, r * 2, r * 2)
+  }
+}
+
 // The board as seen from above, centred at (cx, cy) with hex size s (px).
 // `withLand` false leaves the land out (the 3D tiles sit there instead).
-export function drawBoard(ctx, w, h, cx, cy, s, { withLand = true, background = '#aecbce' } = {}) {
+export function drawBoard(ctx, w, h, cx, cy, s, { withLand = true, background = '#a3d7d4' } = {}) {
   ctx.fillStyle = background
   ctx.fillRect(0, 0, w, h)
-  const sea = new Path2D(roundedHexPath(s * 0.95, s * 0.26))
-  const land = new Path2D(roundedHexPath(s * 0.93, s * 0.22))
-  const shore = new Path2D(roundedHexPath(s * 1.09, s * 0.36))
-  const N = Math.ceil(Math.max(w, h) / (1.5 * s)) + 2
+  const land = new Path2D(roundedHexPath(s * 0.93, s * 0.15))
+  const shore = new Path2D(roundedHexPath(s * 1.09, s * 0.3))
   const pos = (q, r) => [cx + s * SQRT3 * (q + r / 2), cy + s * 1.5 * r]
 
-  for (let q = -N; q <= N; q++) {
-    for (let r = -N; r <= N; r++) {
-      if (hexDistance(q, r) <= 2) continue
-      const [x, y] = pos(q, r)
-      if (x < -s * 2 || x > w + s * 2 || y < -s * 2 || y > h + s * 2) continue
-      const terrain = hash(q, r) > 0.5 ? 'sea' : 'sea2'
-      hexAt(ctx, sea, x, y, radial(ctx, x, y, s * 0.95, fills[terrain]))
-      if (hash(q + 7, r - 3) > 0.62) drawGlyph(ctx, terrain, x, y, s)
-    }
-  }
+  paintSea(ctx, w, h, s)
 
   const tiles = islandTiles()
   ctx.save()
@@ -107,8 +126,36 @@ export function drawBoard(ctx, w, h, cx, cy, s, { withLand = true, background = 
   ctx.shadowOffsetY = s * 0.06
   for (const t of tiles) {
     const [x, y] = pos(t.q, t.r)
-    hexAt(ctx, shore, x, y, '#f3e7cc')
+    hexAt(ctx, shore, x, y, '#faf1da')
   }
+  ctx.restore()
+
+  // A few short, pale highlights along the water's edge, just outside the shore. They are drawn on
+  // their own layer and the island's footprint is cut out of it, so only the outer rim remains.
+  const rim = makeCanvas(w, h)
+  const rc = rim.getContext('2d')
+  const ring = new Path2D(roundedHexPath(s * 1.145, s * 0.32))
+  const cutout = new Path2D(roundedHexPath(s * 1.115, s * 0.31))
+  rc.strokeStyle = '#f2fffc'
+  rc.lineWidth = s * 0.032
+  rc.lineCap = 'round'
+  for (const t of tiles) {
+    const [x, y] = pos(t.q, t.r)
+    rc.save()
+    rc.translate(x, y)
+    rc.setLineDash([s * 0.36, s * 1.2])
+    rc.lineDashOffset = hash(t.q + 9, t.r - 4) * s * 3
+    rc.stroke(ring)
+    rc.restore()
+  }
+  rc.globalCompositeOperation = 'destination-out'
+  for (const t of tiles) {
+    const [x, y] = pos(t.q, t.r)
+    hexAt(rc, cutout, x, y, '#000')
+  }
+  ctx.save()
+  ctx.globalAlpha = 0.42
+  ctx.drawImage(rim, 0, 0)
   ctx.restore()
 
   if (!withLand) return
@@ -120,14 +167,16 @@ export function drawBoard(ctx, w, h, cx, cy, s, { withLand = true, background = 
 }
 
 // One tile top, filling a square canvas. The hex circumradius maps to half the canvas.
-export function drawTileTop(terrain, dest, size = 256) {
+// `motif`: 'full' prints the terrain mark, 'quiet' prints it faintly, 'none' leaves the tile plain
+// (used under 3D scenery, so the same thing is not drawn twice).
+export function drawTileTop(terrain, motif = 'full', size = 256) {
   const c = makeCanvas(size, size)
   const ctx = c.getContext('2d')
   const r = size / 2
   ctx.fillStyle = radial(ctx, r, r, r, fills[terrain])
   ctx.fillRect(0, 0, size, size)
   // Motifs are drawn for the board's hex size, which is the tile radius / 0.93.
-  drawGlyph(ctx, terrain, r, r, r / 0.93, dest ? DEST_GLYPH_OPACITY : undefined)
+  if (motif !== 'none') drawGlyph(ctx, terrain, r, r, r / 0.93, motif === 'quiet' ? DEST_GLYPH_OPACITY : undefined)
   return c
 }
 
