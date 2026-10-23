@@ -31,7 +31,10 @@ import {
   RepeatWrapping,
   Scene,
   ShadowMaterial,
+  SphereGeometry,
   SpotLight,
+  Sprite,
+  SpriteMaterial,
   SRGBColorSpace,
   Vector2,
   Vector3,
@@ -78,6 +81,33 @@ const ENV = {
   board: { c: '#e4f4f1', m: '#cdebe7', e: '#b4dcd8', sky: '#fffdf8', ground: '#d8d0bc', hemi: 1.4, key: 2.0, pool: 0 },
 }
 
+// Night: the same two environments, re-valued. `night` (0 to 1) blends them; GSAP owns that value.
+const ENV_NIGHT = {
+  intro: { c: '#2a3a4c', m: '#122030', e: '#070d15', sky: '#86a8cc', ground: '#16212c', hemi: 0.5, key: 0.5, pool: 2.2 },
+  board: { c: '#1f4650', m: '#143741', e: '#0b2530', sky: '#9fc4da', ground: '#2a4553', hemi: 0.74, key: 0.86, pool: 0 },
+}
+const KEY_COLORS = { day: '#fff6e6', night: '#9fb8e6' }
+const mixHex = new Color()
+const mixHex2 = new Color()
+const lerpHex = (a, b, t) => `#${mixHex.set(a).lerp(mixHex2.set(b), t).getHexString()}`
+const mixEnv = (a, b, t) => {
+  const out = {}
+  for (const k in a) out[k] = typeof a[k] === 'number' ? a[k] + (b[k] - a[k]) * t : lerpHex(a[k], b[k], t)
+  return out
+}
+
+// A few small warm lights around the island, in the sea (clear of the labels and the drop targets).
+// The first of each pair of columns also carries a real point light.
+const LAMP_SPOTS = [
+  [-3.4, -4.5, true],
+  [3.0, -4.6, false],
+  [-5.7, 1.2, false],
+  [5.9, -0.8, true],
+  [-3.0, 4.6, false],
+  [3.6, 4.5, true],
+]
+const LAMP_DROP = 2.2
+
 const tiles = islandTiles()
 const tileXZ = (t) => ({ x: SQRT3 * (t.q + t.r / 2), z: 1.5 * t.r })
 const destTile = Object.fromEntries(tiles.filter((t) => t.dest).map((t) => [t.dest, t]))
@@ -106,6 +136,7 @@ export async function createWorld({
   robberAt,
   getLabel,
   getReserve,
+  night: startNight = false,
   onFirstFrame,
   onContextLost,
   onBoxClick,
@@ -357,10 +388,13 @@ export async function createWorld({
   let fogNear = 60
   let fogFar = 140
   const env = { value: 0 }
+  const night = { value: startNight ? 1 : 0 } // 0 day, 1 night (GSAP owns it)
   const applyEnv = (t) => {
     env.value = t
-    const I = ENV.intro
-    const B = ENV.board
+    const I = mixEnv(ENV.intro, ENV_NIGHT.intro, night.value)
+    const B = mixEnv(ENV.board, ENV_NIGHT.board, night.value)
+    key.color.set(lerpHex(KEY_COLORS.day, KEY_COLORS.night, night.value))
+    scene.fog.color.set(B.m)
     hemi.intensity = I.hemi + (B.hemi - I.hemi) * t
     hemi.color.set(I.sky).lerp(cB.set(B.sky), t)
     hemi.groundColor.set(I.ground).lerp(cB.set(B.ground), t)
@@ -378,8 +412,8 @@ export async function createWorld({
   const applyBg = (t) => {
     bg.value = t
     if (!bgEl) return
-    const I = ENV.intro
-    const B = ENV.board
+    const I = mixEnv(ENV.intro, ENV_NIGHT.intro, night.value)
+    const B = mixEnv(ENV.board, ENV_NIGHT.board, night.value)
     bgEl.style.setProperty('--bg-c', css(I.c, B.c, t))
     bgEl.style.setProperty('--bg-m', css(I.m, B.m, t))
     bgEl.style.setProperty('--bg-e', css(I.e, B.e, t))
@@ -387,6 +421,83 @@ export async function createWorld({
   const envProxy = {
     mix: (v) => (v === undefined ? env.value : applyEnv(v)),
     bg: (v) => (v === undefined ? bg.value : applyBg(v)),
+  }
+
+  // ---------- Night: a few warm lights around the island. Each has a glowing orb; some also carry a
+  // real point light (a small, fixed number, so the lighting setup never changes when toggling).
+  // They exist only while the board is showing, and descend into place from just above.
+  const lampGroup = new Group()
+  lampGroup.visible = false
+  slide.add(lampGroup)
+  const orbGeo = new SphereGeometry(0.07, 12, 9)
+  const lamps = LAMP_SPOTS.slice(0, small ? 4 : 6).map(([x, z, real]) => {
+    const g = new Group()
+    const baseY = TILE_TOP + 0.55
+    g.position.set(x, baseY + LAMP_DROP, z)
+    g.add(new Mesh(orbGeo, new MeshBasicMaterial({ color: '#ffd28a', fog: false })))
+    const glow = new Sprite(
+      new SpriteMaterial({ map: softDot, color: '#ff9a3c', transparent: true, opacity: 0, blending: AdditiveBlending, depthWrite: false, fog: false }),
+    )
+    glow.scale.setScalar(0.78)
+    g.add(glow)
+    let light = null
+    if (real) {
+      light = new PointLight(0xffb866, 0, 8, 2)
+      g.add(light)
+    }
+    lampGroup.add(g)
+    return { g, glow, light, baseY, p: 0 }
+  })
+  const applyLamp = (l) => {
+    l.g.position.y = l.baseY + LAMP_DROP * (1 - l.p)
+    l.glow.material.opacity = 0.5 * l.p
+    if (l.light) l.light.intensity = 2.4 * l.p
+    l.g.visible = l.p > 0.003
+    dirty = true
+  }
+  const syncLamps = () => (lampGroup.visible = phase === 'board' && lamps.some((l) => l.p > 0.003))
+  // Lights come down (or lift away) one after another, overlapping, about 0.8s in all.
+  const lampsTo = (on, { animate, delay = 0 }) => {
+    lamps.forEach((l, i) => {
+      gsap.killTweensOf(l)
+      if (!animate || reduced) {
+        l.p = on ? 1 : 0
+        applyLamp(l)
+      } else {
+        gsap.to(l, { p: on ? 1 : 0, duration: on ? 0.55 : 0.4, delay: delay + i * 0.05, ease: on ? 'power2.out' : 'power2.in', onUpdate: () => (applyLamp(l), syncLamps()), onComplete: syncLamps })
+      }
+    })
+    syncLamps()
+  }
+  const robberMat = robber.material
+  robberMat.emissive.set('#8fa4bd')
+  const applyNight = () => {
+    // Environment (lights, fog, page background) follows the blend; so do the robber's gentle
+    // self-light (to stay easy to find) and the water's tone.
+    applyEnv(env.value)
+    applyBg(bg.value)
+    robberMat.emissiveIntensity = 0.32 * night.value
+    drift?.setNight(night.value)
+    dirty = true
+  }
+  let nightTl = null
+  const setNight = (on, { animate = true } = {}) => {
+    const target = on ? 1 : 0
+    nightTl?.kill()
+    nightTl = null
+    if (!animate || reduced) {
+      night.value = target
+      applyNight()
+      lampsTo(on && phase === 'board', { animate: false })
+      keepDrawing(0.2)
+      return
+    }
+    // One short timeline: the light dims and the colours shift, while the small lights descend
+    // (or lift away) a beat behind. A new toggle replaces whatever is still running.
+    nightTl = gsap.timeline()
+    nightTl.to(night, { value: target, duration: 0.8, ease: 'power1.inOut', onUpdate: applyNight }, 0)
+    if (phase === 'board') lampsTo(on, { animate: true, delay: on ? 0.2 : 0 })
+    keepDrawing(1.4)
   }
 
   // ---------- Camera rig: yaw / pitch / distance around a target. GSAP tweens it.
@@ -617,6 +728,7 @@ export async function createWorld({
       h.holder.scale.setScalar(1)
     }
     drift?.show(!paused)
+    lampsTo(night.value > 0.5, { animate: true })
     gsap.killTweensOf(robberRoot.position)
     robberRoot.position.y = TILE_TOP
     Object.assign(rig, boardPose())
@@ -708,6 +820,7 @@ export async function createWorld({
       h.holder.scale.setScalar(0.001)
     }
     drift?.hide()
+    lampsTo(false, { animate: false })
     robberTl?.kill()
     gsap.killTweensOf(robberRoot.position)
     const p = restOf(robberAtNow)
@@ -738,6 +851,7 @@ export async function createWorld({
     }
     settleSlide()
     drift?.hide()
+    lampsTo(false, { animate: false })
     finish(false)
     setHot(null)
     setLabelState('data-target', [])
@@ -1081,6 +1195,7 @@ export async function createWorld({
     applyEnv(0)
     applyBg(0)
   }
+  applyNight()
   gsap.ticker.add(tick)
 
   // ---------- Arrival: the box drops onto the table from above, lands with a soft bounce and a
@@ -1131,6 +1246,8 @@ export async function createWorld({
     slideTl?.kill()
     clearTimeout(pulseTimer)
     drift?.dispose()
+    nightTl?.kill()
+    gsap.killTweensOf([night, ...lamps])
     gsap.killTweensOf([...details.map((h) => h.holder.scale), ...tileMeshes.map((m) => m.position), robberRoot.position, lift.position, lift.rotation, lift.scale, blob.scale, blobMat])
     gsap.ticker.remove(tick)
     ro.disconnect()
@@ -1167,6 +1284,7 @@ export async function createWorld({
       else if (phase === 'intro') settleBoard()
     },
     setRobber,
+    setNight,
     setPaused: (p) => {
       paused = p
       if (!p) dirty = true
@@ -1192,6 +1310,7 @@ export async function createWorld({
           home: HOME,
           drift,
           draw: () => render(),
+          nightState: () => ({ night: +night.value.toFixed(3), lamps: lamps.map((l) => +l.p.toFixed(2)), shown: lampGroup.visible }),
           slide(t) {
             slideTl?.pause().seek(t)
             render()

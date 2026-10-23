@@ -3,9 +3,10 @@
 // reduced motion, so content is always readable without it.
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { ScrollToPlugin } from 'gsap/ScrollToPlugin'
 import { useGSAP } from '@gsap/react'
 
-gsap.registerPlugin(ScrollTrigger, useGSAP)
+gsap.registerPlugin(ScrollTrigger, ScrollToPlugin, useGSAP)
 
 export { gsap, ScrollTrigger, useGSAP }
 
@@ -63,15 +64,34 @@ export function refreshWhenSettled(root) {
 // Dev only: lets automated checks count live triggers (no duplicates after reopening a section).
 if (import.meta.env.DEV) window.__ST = ScrollTrigger
 
+// Scroll the panel to `top`. With motion allowed it glides (eased, longer for longer distances, and
+// it stops if the visitor scrolls themselves); with reduced motion, or `smooth: false`, it just goes.
+export function smoothScrollTo(area, top, { smooth = true } = {}) {
+  if (!area) return
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  gsap.killTweensOf(area)
+  if (!smooth || reduced) {
+    area.scrollTop = top
+    return
+  }
+  const distance = Math.abs(top - area.scrollTop)
+  if (distance < 2) return
+  gsap.to(area, {
+    scrollTo: { y: top, autoKill: true },
+    duration: Math.min(1.1, 0.45 + distance / 2600),
+    ease: 'power2.inOut',
+    overwrite: true,
+  })
+}
+
 // Jump to an anchor inside the content panel (e.g. /experience#ds3): scroll the panel itself,
 // smoothly unless reduced motion asks otherwise, then put focus on the target's heading.
 export function scrollToAnchor(id, { smooth = true } = {}) {
   const target = id && document.getElementById(id)
   const area = target?.closest('[data-panel-scroll]')
   if (!target || !area) return false
-  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
   const top = target.getBoundingClientRect().top - area.getBoundingClientRect().top + area.scrollTop - 16
-  area.scrollTo({ top, behavior: smooth && !reduced ? 'smooth' : 'auto' })
+  smoothScrollTo(area, top, { smooth })
   const heading = target.matches('h2, h3') ? target : target.querySelector('h2, h3')
   if (heading) {
     if (!heading.hasAttribute('tabindex')) heading.setAttribute('tabindex', '-1')

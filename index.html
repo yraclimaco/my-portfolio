@@ -6,6 +6,15 @@
     <title>Yra Climaco | Product Analytics &amp; Data Science</title>
     <meta name="description" content="Portfolio of Yra Climaco: product analytics and data science for consumer tech, including gaming, streaming, and entertainment." />
     <meta name="theme-color" content="#F7F0E3" />
+    <script>
+      // Set the theme before the first paint: the visitor's saved choice, else the system setting.
+      try {
+        var t = localStorage.getItem('theme')
+        if (t !== 'light' && t !== 'dark') t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+        document.documentElement.dataset.theme = t
+        if (t === 'dark') document.querySelector('meta[name="theme-color"]').setAttribute('content', '#152433')
+      } catch (e) {}
+    </script>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="canonical" href="https://my-portfolio-wine-rho-7ap5y1f67c.vercel.app/" />
 

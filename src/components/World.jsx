@@ -4,6 +4,7 @@ import { SkipIntro } from './BoxFallback'
 import { Glyph } from './ui'
 import { HOME, destinations, destinationFor } from '../content/board'
 import { profile } from '../content/profile'
+import { getTheme, useTheme } from '../lib/theme'
 
 // The 3D world: the intro box and the board it opens onto are one scene. The intro's words and
 // controls are HTML laid over it and work before the scene has loaded. Labels are crisp HTML
@@ -24,6 +25,7 @@ export default function World({ intro, homeDelay = 0, onOpened, robber, panelOpe
   const doneRef = useRef(!intro) // the board has been reached (guards double completion)
   const timerRef = useRef(null)
   const live = useRef({})
+  const theme = useTheme()
 
   // The route and Home drive the world: arriving on a section shows the board, Home closes the box.
   const [lastIntro, setLastIntro] = useState(intro)
@@ -127,6 +129,7 @@ export default function World({ intro, homeDelay = 0, onOpened, robber, panelOpe
           reduced,
           opened: doneRef.current,
           robberAt: live.current.robber.at,
+          night: getTheme() === 'dark',
           getLabel: (id) => labels.current[id] ?? null,
           getReserve: () => {
             const t = titleRef.current?.getBoundingClientRect()
@@ -147,6 +150,7 @@ export default function World({ intro, homeDelay = 0, onOpened, robber, panelOpe
         if (phaseRef.current === 'board' && a.phase !== 'board') a.toBoard()
         a.setRobber(live.current.robber.at, false)
         a.setPaused(live.current.panelOpen)
+        a.setNight(getTheme() === 'dark', { animate: false })
         if (import.meta.env.DEV) window.__world = a
       })
       .catch(fail)
@@ -165,6 +169,11 @@ export default function World({ intro, homeDelay = 0, onOpened, robber, panelOpe
     if (robber.nonce > 0) apiRef.current?.setRobber(robber.at, robber.travel)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [robber.nonce])
+
+  // Day and night: the same scene, re-lit (no rebuild).
+  useEffect(() => {
+    apiRef.current?.setNight(theme === 'dark')
+  }, [theme])
 
   // Nothing needs to move while content covers the board.
   useEffect(() => {

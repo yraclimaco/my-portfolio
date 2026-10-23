@@ -2,8 +2,7 @@ import { useLayoutEffect, useRef } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { EvidenceTag, ExternalLink, Figure, Glyph } from '../components/ui'
 import { getProject, projects } from '../content/projects'
-import { prefersReducedMotion } from '../lib/motion'
-import { FINE_POINTER, MOTION_OK, ScrollTrigger, finishIfStalled, gsap, panelScroller, refreshWhenSettled, revealOnce, useGSAP } from '../lib/scroll'
+import { FINE_POINTER, MOTION_OK, ScrollTrigger, finishIfStalled, gsap, panelScroller, refreshWhenSettled, revealOnce, smoothScrollTo, useGSAP } from '../lib/scroll'
 import { usePageMeta } from '../lib/usePageMeta'
 
 // Where the gallery was when a project was opened (scroll position, and the card's thumbnail on
@@ -149,7 +148,7 @@ function jumpTo(e, id) {
   const target = document.getElementById(`pd-${id}`)
   if (!area || !target) return
   const top = target.getBoundingClientRect().top - area.getBoundingClientRect().top + area.scrollTop - 16
-  area.scrollTo({ top, behavior: prefersReducedMotion() ? 'auto' : 'smooth' })
+  smoothScrollTo(area, top)
   target.querySelector('h2')?.focus({ preventScroll: true })
 }
 

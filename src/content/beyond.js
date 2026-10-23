@@ -14,6 +14,8 @@
 //             width/height: the image's pixel size, so the page reserves its space while it loads
 //             position: optional crop focus when the photo is trimmed to fit, e.g. '50% 20%'
 //   accent    which small illustration to show: 'bjj' | 'games' | 'cards' | 'food'
+//
+// The "On repeat" song below the interests is edited here too (see `music`).
 
 export const beyondIntro = 'Outside of data: Brazilian Jiu-Jitsu, board games, card magic, and trying new food.'
 
@@ -133,7 +135,38 @@ export const interests = [
         width: 480,
         height: 640,
       },
+      {
+        src: '/beyond/food/banana-bread.webp',
+        alt: 'Two thick slices of homemade banana bread with chocolate chips on a black plate, on a speckled counter.',
+        caption: 'Banana bread I baked.',
+        width: 960,
+        height: 1280,
+      },
     ],
     accent: 'food',
   },
 ]
+
+// "On repeat": one song to recommend, picked by hand (not live listening data).
+//   title, artist  shown as written
+//   artwork        { src, alt, width, height }: the cover image, kept under /public
+//   trackUrl       the song's Spotify link (open.spotify.com/track/...). Leave '' to hide the link.
+//   previewUrl     a short audio preview (about 30 seconds) for the play button. Leave '' to hide the
+//                  button. Spotify no longer shares preview clips, so this one is Apple's public
+//                  preview of the same song, from the Collide With The Sky album.
+//   profileUrl     your Spotify profile link. Leave '' and the profile icon stays hidden.
+export const music = {
+  heading: 'On repeat',
+  title: 'Hold On Till May',
+  artist: 'Pierce the Veil',
+  artwork: {
+    src: '/beyond/music/hold-on-till-may.jpg',
+    alt: 'Album cover for Collide With The Sky by Pierce the Veil: a weathered house with a figure floating above it under a cloudy blue sky.',
+    width: 300,
+    height: 300,
+  },
+  trackUrl: 'https://open.spotify.com/track/6ZTykhKItjlAEjZXl81GUO',
+  previewUrl:
+    'https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/88/92/e9/8892e99f-12e4-6b21-f88f-5e25ebbac5f1/mzaf_3853468370589365417.plus.aac.p.m4a',
+  profileUrl: 'https://open.spotify.com/user/v1hg1ue2bpil0af29p6knxqt5',
+}

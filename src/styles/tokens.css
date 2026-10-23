@@ -27,6 +27,21 @@
   --coast-deep: #9dbec2;
   --shore: #f3e7cc;
 
+  /* Surfaces used by more than one component, so night can restyle them in one place. */
+  --paper-hi: #fffdf7;
+  --frame: #fff;
+  --hobby-b: #f3ecdb;
+  --hobby-c: rgb(232 239 223 / 0.7);
+  --music-card: #f6efdf;
+  --paper-rgb: 253 248 238;
+  --cream-rgb: 247 240 227;
+  --oat-rgb: 241 230 210;
+  --accent-bg: #4f6e51;
+  --accent-hover: #476449;
+  --on-accent: #fdf8ee;
+  --on-dark: #fdf8ee;
+  --focus: #4f6e51;
+
   --line: rgb(59 49 41 / 0.1);
   --line-strong: rgb(59 49 41 / 0.2);
 

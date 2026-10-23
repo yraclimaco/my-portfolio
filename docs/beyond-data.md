@@ -69,3 +69,24 @@ To find an image's pixel size on Windows: right-click the file, Properties, Deta
 
 Run `npm run dev` and open http://localhost:5177/beyond-data.
 In development only, `http://localhost:5177/beyond-data?photos=demo` fills in sample photos so you can see the one-photo and several-photo layouts.
+
+## The "On repeat" song
+
+The song card at the top of the page comes from the `music` object in `src/content/beyond.js`.
+It is a hand-picked recommendation, not live listening data. Nothing plays until the play button
+is pressed.
+
+| Field | Notes |
+| --- | --- |
+| `title`, `artist` | Shown as written. |
+| `artwork` | `{ src, alt, width, height }`. Put the cover in `public/beyond/music/`. |
+| `trackUrl` | The song's Spotify link (`https://open.spotify.com/track/...`). Leave `''` to hide the link. |
+| `previewUrl` | A short (about 30 second) audio clip for the play button. Leave `''` to hide the button. Spotify no longer shares preview clips, so the current one is Apple's public preview of the same song. |
+| `profileUrl` | Your Spotify profile link. Leave `''` and the large profile icon stays hidden. |
+
+To change the song, replace those fields and the cover image. The small waveform on the card is
+decoration only: it moves a little while the card is on screen, stays still under reduced motion,
+and is hidden from screen readers.
+
+As you scroll the page, the interest at the reading line is lifted slightly and the others ease
+back. This is skipped under reduced motion.

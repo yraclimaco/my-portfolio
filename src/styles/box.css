@@ -8,7 +8,7 @@
   place-items: center;
   padding: 2rem var(--gutter);
   overflow-y: auto;
-  background: rgb(247 240 227 / 0.78);
+  background: rgb(var(--cream-rgb) / 0.78);
   backdrop-filter: blur(10px) saturate(0.95);
   -webkit-backdrop-filter: blur(10px) saturate(0.95);
 }
@@ -35,7 +35,7 @@
 .game-box__lid {
   position: absolute;
   inset: 0;
-  color: var(--paper);
+  color: var(--on-dark);
   /* Darkest tone (#527455) still gives cream text ≥ 4.6:1 contrast. */
   background:
     radial-gradient(70% 60% at 22% 20%, rgb(255 255 255 / 0.08) 0%, rgb(255 255 255 / 0) 70%),
@@ -105,7 +105,7 @@
   font-weight: 700;
   line-height: 0.98;
   letter-spacing: -0.025em;
-  color: var(--paper);
+  color: var(--on-dark);
 }
 
 .game-box__subtitle {
@@ -179,7 +179,7 @@
   font-size: 0.95rem;
   font-weight: 600;
   color: var(--ink);
-  background: rgb(253 248 238 / 0.82);
+  background: rgb(var(--paper-rgb) / 0.82);
   border: 0;
   border-radius: 999px;
   box-shadow: 0 0 0 1px var(--line);

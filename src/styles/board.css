@@ -149,7 +149,7 @@
   max-width: calc(var(--s) * 1.62);
   text-align: center;
   white-space: nowrap;
-  background: rgb(253 248 238 / 0.95);
+  background: rgb(var(--paper-rgb) / 0.95);
   border-radius: 999px;
   box-shadow: var(--press), var(--shadow-soft);
   transform: translate(-50%, -50%);
@@ -178,7 +178,7 @@
 
 .dest.is-hot .dest__plaque {
   transform: translate(-50%, calc(-50% - 5px));
-  background: #fffdf7;
+  background: var(--paper-hi);
   box-shadow: var(--press), var(--shadow-lift);
 }
 
@@ -188,7 +188,7 @@
 }
 
 .dest.is-active .dest__plaque {
-  background: #fffdf7;
+  background: var(--paper-hi);
   box-shadow:
     0 0 0 3px rgb(79 110 81 / 0.35),
     var(--shadow-lift);
@@ -250,7 +250,7 @@
   font-size: 0.88rem;
   font-weight: 600;
   white-space: nowrap;
-  color: var(--paper);
+  color: var(--on-dark);
   background: rgb(59 49 41 / 0.78);
   border-radius: 999px;
   box-shadow: 0 6px 16px -8px rgb(0 0 0 / 0.5);

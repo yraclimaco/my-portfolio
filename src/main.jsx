@@ -11,6 +11,7 @@ import './styles/world.css'
 import './styles/panel.css'
 import './styles/work.css'
 import './styles/pages.css'
+import './styles/theme.css'
 import App from './App.jsx'
 
 createRoot(document.getElementById('root')).render(

@@ -83,13 +83,13 @@
 
 .skill__btn.is-static {
   cursor: default;
-  background: rgb(253 248 238 / 0.6);
+  background: rgb(var(--paper-rgb) / 0.6);
   box-shadow: 0 0 0 1px var(--line);
 }
 
 button.skill__btn:hover {
   transform: translateY(-2px);
-  background: #fffdf7;
+  background: var(--paper-hi);
   box-shadow: 0 0 0 1px var(--line-strong), var(--shadow-soft);
 }
 
@@ -225,7 +225,7 @@ button.skill-word[aria-expanded='true'] {
 }
 
 .skill-word.is-static {
-  background: rgb(241 230 210 / 0.6);
+  background: rgb(var(--oat-rgb) / 0.6);
 }
 
 .sgroup__used:empty {
@@ -302,7 +302,7 @@ button.skill-word[aria-expanded='true'] {
 }
 
 .beyond-nav a:hover {
-  background: #fffdf7;
+  background: var(--paper-hi);
   transform: translateY(-1px);
 }
 
@@ -351,17 +351,42 @@ button.skill-word[aria-expanded='true'] {
 }
 
 .hobby:nth-child(4n + 2) {
-  background: #f3ecdb;
+  background: var(--hobby-b);
 }
 
 .hobby:nth-child(4n + 3) {
-  background: rgb(232 239 223 / 0.7);
+  background: var(--hobby-c);
 }
 
 .hobby__media {
   display: grid;
   place-items: center;
   min-width: 0;
+}
+
+/* The hobby at the reading line comes forward: a firmer shadow, its picture settling (the same
+   response as hovering it), while the others ease back a little. */
+.hobby {
+  transition:
+    box-shadow 450ms var(--ease),
+    opacity 450ms var(--ease);
+}
+
+.hobby.is-focus {
+  box-shadow: var(--shadow-lift);
+}
+
+.section--beyond.has-focus .hobby:not(.is-focus) {
+  opacity: 0.86;
+}
+
+.hobby.is-focus .hobby__art {
+  rotate: -5deg;
+  scale: 1.04;
+}
+
+.hobby.is-focus .hobby__photo {
+  rotate: 0deg;
 }
 
 /* The illustration sits on a stitched patch, like a sticker in a scrapbook. */
@@ -427,6 +452,295 @@ button.skill-word[aria-expanded='true'] {
   color: var(--sage-ink);
 }
 
+/* ---------- On repeat: a small listening corner ---------- */
+
+.music {
+  container-type: inline-size;
+  margin-bottom: clamp(2rem, 5vw, 3rem);
+}
+
+.music__heading {
+  font-size: var(--step-2);
+  font-weight: 650;
+  line-height: 1.25;
+}
+
+/* The card sits at the start of the row; on wide screens the Spotify profile fills the space beside it. */
+.music__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem clamp(1.5rem, 5vw, 3.5rem);
+  margin-top: 0.9rem;
+}
+
+/* A compact profile link under the card on narrow screens... */
+.music__profile {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 44px;
+  font-weight: 600;
+  color: var(--sage-ink);
+  text-decoration: none;
+}
+
+.music__profile-icon {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  color: var(--sage-ink);
+  background: var(--paper);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 1px var(--line-strong),
+    var(--shadow-soft);
+  transition:
+    rotate 380ms var(--ease),
+    scale 380ms var(--ease);
+}
+
+.music__profile-icon svg {
+  width: 55%;
+  height: 55%;
+  fill: currentColor;
+}
+
+.music__profile:hover .music__profile-icon,
+.music__profile:focus-visible .music__profile-icon {
+  rotate: -5deg;
+  scale: 1.05;
+}
+
+.music__profile:focus-visible {
+  outline: 3px solid var(--sage-deep);
+  outline-offset: 4px;
+  border-radius: 999px;
+}
+
+.music__profile-label {
+  text-decoration: underline;
+  text-decoration-color: rgb(69 98 74 / 0.4);
+  text-underline-offset: 3px;
+}
+
+.music__card {
+  position: relative;
+  flex: 1 1 100%;
+  min-width: 0;
+  max-width: 34rem;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-areas:
+    'art body'
+    'wave wave';
+  align-items: center;
+  gap: 1rem 1.25rem;
+  padding: clamp(1rem, 3vw, 1.35rem);
+  background: var(--music-card);
+  background-image: var(--paper-grain);
+  border-radius: var(--r-lg);
+  box-shadow:
+    0 0 0 1px var(--line),
+    var(--shadow-soft);
+  transition:
+    transform var(--t-hover) var(--ease),
+    box-shadow var(--t-hover) var(--ease);
+}
+
+.music__card:hover,
+.music__card:focus-within {
+  transform: translateY(-2px);
+  box-shadow:
+    0 0 0 1px var(--line-strong),
+    var(--shadow-lift);
+}
+
+/* The cover sits like a small print, tilted a touch and straightening on hover or focus. */
+.music__art {
+  position: relative;
+  grid-area: art;
+  margin: 0;
+  width: clamp(5.25rem, 22cqi, 6.75rem);
+  padding: 5px;
+  background: var(--frame);
+  border-radius: 8px;
+  box-shadow: var(--shadow-soft);
+  rotate: -2deg;
+  transition: rotate var(--t-hover) var(--ease);
+}
+
+.music__card:hover .music__art,
+.music__card:focus-within .music__art {
+  rotate: 0deg;
+}
+
+/* The play button sits on the cover: a soft paper disc that fills a ring as the clip plays. */
+.music__play {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  color: var(--sage-ink);
+  background: rgb(var(--paper-rgb) / 0.92);
+  border: 0;
+  border-radius: 50%;
+  box-shadow: var(--shadow-soft);
+  translate: -50% -50%;
+  cursor: pointer;
+  transition:
+    scale var(--t-hover) var(--ease),
+    background-color var(--t-hover) var(--ease);
+}
+
+.music__play:hover:not(:disabled) {
+  background: var(--paper-hi);
+  scale: 1.06;
+}
+
+.music__play:focus-visible {
+  outline: 3px solid var(--sage-deep);
+  outline-offset: 3px;
+}
+
+.music__play:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+
+.music__play svg {
+  width: 100%;
+  height: 100%;
+}
+
+.music__play-ring {
+  fill: none;
+  stroke: var(--sage-dark);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  opacity: 0;
+}
+
+.music__play.is-playing .music__play-ring,
+.music__play.is-loading .music__play-ring {
+  opacity: 1;
+}
+
+.music__play-icon {
+  fill: currentColor;
+}
+
+.music__art img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  border-radius: 4px;
+}
+
+.music__body {
+  grid-area: body;
+  min-width: 0;
+}
+
+.music__song {
+  font-size: var(--step-1);
+  font-weight: 650;
+  line-height: 1.25;
+  color: var(--ink);
+}
+
+.music__artist {
+  margin-top: 0.15rem;
+  color: var(--muted);
+}
+
+.music__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.25rem;
+  margin-top: 0.6rem;
+}
+
+.music__links .hobby__link:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.music__links .hobby__link:focus-visible {
+  outline: 3px solid var(--sage-deep);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* A quiet waveform: decoration only, in muted palette colours, always behind the words. */
+.music__wave {
+  grid-area: wave;
+  width: 100%;
+  height: 1.75rem;
+  color: var(--sage-dark);
+  opacity: 0.6;
+}
+
+.music__wave rect {
+  fill: currentColor;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.music__wave rect.is-warm {
+  fill: var(--terracotta);
+  opacity: 0.8;
+}
+
+/* ...and a large, sticker-like icon beside the card on wide ones, to fill the open space. */
+@container (min-width: 44rem) {
+  .music__card {
+    flex: 0 1 34rem;
+  }
+
+  /* Centred in whatever width the card leaves. */
+  .music__profile {
+    flex: 1 1 0;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 0.5rem;
+  }
+
+  .music__profile-icon {
+    width: clamp(7rem, 16cqi, 9.5rem);
+    height: clamp(7rem, 16cqi, 9.5rem);
+    box-shadow:
+      0 0 0 6px var(--paper),
+      0 0 0 7.5px rgb(79 110 81 / 0.25),
+      var(--shadow-soft);
+  }
+
+  .music__profile-label {
+    text-decoration: none;
+  }
+
+  .music__profile:hover .music__profile-label {
+    text-decoration: underline;
+  }
+}
+
+@container (min-width: 32rem) {
+  .music__card {
+    grid-template-columns: auto minmax(0, 1fr) 6.5rem;
+    grid-template-areas: 'art body wave';
+  }
+
+  .music__wave {
+    height: 2.25rem;
+  }
+}
+
 /* Photos: a white-bordered print, gently tilted; more photos sit in a strip underneath. */
 .hobby__photos {
   display: grid;
@@ -454,7 +768,7 @@ button.skill-word[aria-expanded='true'] {
   display: block;
   width: 100%;
   padding: 8px;
-  background: #fff;
+  background: var(--frame);
   border: 0;
   border-radius: 10px;
   box-shadow: var(--shadow-soft);
@@ -516,7 +830,7 @@ button.skill-word[aria-expanded='true'] {
   display: grid;
   place-items: center;
   font-weight: 650;
-  color: var(--paper);
+  color: var(--on-dark);
   background: rgb(59 49 41 / 0.55);
   border-radius: 4px;
 }

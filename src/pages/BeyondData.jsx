@@ -2,9 +2,10 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import HobbyArt from '../components/HobbyArt'
 import Lightbox from '../components/Lightbox'
+import OnRepeat from '../components/OnRepeat'
 import { Glyph } from '../components/ui'
 import { beyondIntro, interests as content } from '../content/beyond'
-import { MOTION_OK, gsap, panelScroller, refreshWhenSettled, revealOnce, arriveAtAnchor, scrollToAnchor, useGSAP } from '../lib/scroll'
+import { MOTION_OK, ScrollTrigger, gsap, panelScroller, refreshWhenSettled, revealOnce, arriveAtAnchor, scrollToAnchor, useGSAP } from '../lib/scroll'
 import { usePageMeta } from '../lib/usePageMeta'
 
 // Dev only: /beyond-data?photos=demo fills in sample photos (from existing site images) to check
@@ -18,6 +19,47 @@ function withDemoPhotos(list) {
     { src: '/work/adcc/thumb.webp', alt: 'Sample photo four', caption: 'A fourth, to show the overflow count.', width: 718, height: 404 },
   ]
   return list.map((it, i) => ({ ...it, photos: i === 0 ? sample : i === 1 ? sample.slice(1, 2) : it.photos }))
+}
+
+// As the page scrolls, the hobby that sits at the reading line (a little above the middle of the
+// panel) is lifted forward and the others ease back. Only one at a time; none while the line is
+// over the song card or a gap. Skipped under reduced motion.
+function emphasizeInView(root, scroller) {
+  const cards = gsap.utils.toArray('.hobby', root)
+  if (!cards.length || !scroller) return () => {}
+  let current = null
+  const set = (el) => {
+    if (el === current) return
+    if (current) {
+      current.classList.remove('is-focus')
+      gsap.to(current, { scale: 1, y: 0, duration: 0.5, ease: 'power2.out', overwrite: 'auto' })
+    }
+    current = el
+    root.classList.toggle('has-focus', Boolean(el))
+    if (el) {
+      el.classList.add('is-focus')
+      gsap.to(el, { scale: 1.012, y: -4, duration: 0.55, ease: 'power2.out', overwrite: 'auto' })
+    }
+  }
+  const pick = () => {
+    const box = scroller.getBoundingClientRect()
+    const line = box.top + box.height * 0.42
+    const hit = cards.find((c) => {
+      const r = c.getBoundingClientRect()
+      return r.top <= line && r.bottom >= line
+    })
+    set(hit ?? null)
+  }
+  const trigger = ScrollTrigger.create({ trigger: root, scroller, start: 'top bottom', end: 'bottom top', onUpdate: pick, onRefresh: pick })
+  pick()
+  return () => {
+    trigger.kill()
+    cards.forEach((c) => {
+      c.classList.remove('is-focus')
+      gsap.set(c, { clearProps: 'transform' })
+    })
+    root.classList.remove('has-focus')
+  }
 }
 
 const paragraphs = (story) => (Array.isArray(story) ? story : story ? [story] : [])
@@ -131,6 +173,8 @@ export default function BeyondData() {
           revealOnce('.beyond-nav', scroller, { y: 8 }),
           revealOnce('.hobby__media', scroller, { y: 20, stagger: 0.08 }),
           revealOnce('.hobby__text', scroller, { y: 12, stagger: 0.08, delay: 0.2 }),
+          revealOnce('.music__heading, .music__card', scroller, { y: 14, stagger: 0.1, delay: 0.1 }),
+          emphasizeInView(root.current, scroller),
           refreshWhenSettled(root.current),
         ]
         return () => offs.forEach((f) => f())
@@ -163,6 +207,8 @@ export default function BeyondData() {
           </a>
         ))}
       </nav>
+
+      <OnRepeat />
 
       <div className="scrapbook">
         {interests.map((it) => (

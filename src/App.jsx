@@ -5,6 +5,7 @@ import BoxFallback from './components/BoxFallback'
 import World from './components/World'
 import Panel from './components/Panel'
 import SiteHeader from './components/SiteHeader'
+import ThemeCord from './components/ThemeCord'
 import { routes } from './routes'
 import { HOME, destinationFor, destinations, sectionFor } from './content/board'
 import { BOX_OPENED_KEY, PIECE_KEY, session } from './lib/session'
@@ -189,6 +190,7 @@ export default function App() {
           )}
         </main>
       </div>
+      <ThemeCord />
       {engine === '2d' && boxVisible && <BoxFallback onOpened={onBoxOpened} reducedMotion={reduced} />}
     </HomeContext.Provider>
   )

@@ -524,6 +524,7 @@ const WATER_FRAG = `
 varying vec2 vW;
 uniform float uTime;
 uniform float uFade;
+uniform float uNight;
 float hash(vec2 p) {
   p = fract(p * vec2(123.34, 456.21));
   p += dot(p, p + 45.32);
@@ -549,10 +550,13 @@ void main() {
   float deep = smoothstep(0.4, 0.8, noise(p * 0.3 + vec2(uTime * 0.012, 4.0))) * 0.07;
   float hexd = max(abs(vW.y), 0.866 * abs(vW.x) + 0.5 * abs(vW.y));
   float away = smoothstep(4.3, 5.6, hexd);
-  float aLight = light * 0.2 * away * uFade;
-  float aDeep = deep * uFade;
+  // At night the veins are cooler and fainter (moonlight on water), and the deeper tone richer.
+  float aLight = light * mix(0.2, 0.15, uNight) * away * uFade;
+  float aDeep = deep * mix(1.0, 1.6, uNight) * uFade;
   float a = aLight + aDeep;
-  vec3 col = (vec3(0.94, 1.0, 0.98) * aLight + vec3(0.12, 0.5, 0.56) * aDeep) / max(a, 0.0001);
+  vec3 lightCol = mix(vec3(0.94, 1.0, 0.98), vec3(0.62, 0.84, 0.96), uNight);
+  vec3 deepCol = mix(vec3(0.12, 0.5, 0.56), vec3(0.04, 0.2, 0.3), uNight);
+  vec3 col = (lightCol * aLight + deepCol * aDeep) / max(a, 0.0001);
   gl_FragColor = vec4(col, a);
 }
 `
@@ -569,7 +573,7 @@ export function createDrift({ parent, makeTexture, small, baseY, swayers = [], w
   sea.visible = false
   parent.add(sea)
   const waterMat = new ShaderMaterial({
-    uniforms: { uTime: { value: 0 }, uFade: { value: 0 } },
+    uniforms: { uTime: { value: 0 }, uFade: { value: 0 }, uNight: { value: 0 } },
     vertexShader: WATER_VERT,
     fragmentShader: WATER_FRAG,
     transparent: true,
@@ -748,6 +752,10 @@ export function createDrift({ parent, makeTexture, small, baseY, swayers = [], w
       applySea()
       group.visible = false
       sea.visible = false
+    },
+    setNight(v) {
+      waterMat.uniforms.uNight.value = v
+      dirty = true
     },
     // Dev-only: where things are right now.
     probe: () => ({

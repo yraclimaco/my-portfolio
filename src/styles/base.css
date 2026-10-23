@@ -107,8 +107,8 @@ p {
   left: 10px;
   z-index: 100;
   padding: 0.5rem 1rem;
-  background: var(--sage-deep);
-  color: var(--paper);
+  background: var(--accent-bg);
+  color: var(--on-accent);
   font-weight: 600;
   border-radius: var(--r-sm);
   transform: translateY(-200%);
@@ -181,13 +181,13 @@ figcaption {
 }
 
 .btn--primary {
-  background: var(--sage-deep);
-  color: var(--paper);
+  background: var(--accent-bg);
+  color: var(--on-accent);
   box-shadow: var(--press), 0 8px 18px -10px rgb(79 110 81 / 0.8);
 }
 
 .btn--primary:hover {
-  background: #476449;
+  background: var(--accent-hover);
 }
 
 .btn--primary:active {
@@ -201,7 +201,7 @@ figcaption {
 }
 
 .btn--soft:hover {
-  background: #fffcf5;
+  background: var(--paper-hi);
 }
 
 .btn--quiet {

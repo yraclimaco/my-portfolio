@@ -1,0 +1,103 @@
+/* ---------- Night theme ----------
+   The same tokens as day, re-valued: deep navy and blue-green surfaces, warm cream text, and a
+   lighter sage for accents. Components read these tokens, so most of the site follows without
+   changes. Photos and screenshots are images and keep their own colours. Contrast notes (WCAG):
+   ink/paper 11.5 · muted/paper 6.6 · sage-ink/paper 8.1 · terracotta-ink/paper 6.4 ·
+   on-accent/accent-bg 6.3. */
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --cream: #1b2933;
+  --paper: #22323d;
+  --oat: #2b3e49;
+  --ink: #f0e8d6;
+  --muted: #b6c3c6;
+  --sage-deep: #9fd3a9;
+  --sage-ink: #aedcb6;
+  --sage-mist: #2a4438;
+  --terracotta-ink: #eeb298;
+  --coast-ink: #94cfd8;
+
+  --butter: #d8b869;
+  --peach: #d9a98e;
+  --terracotta: #cf8a72;
+  --sage: #8fb08a;
+  --sage-dark: #77a07d;
+  --coast: #5d8f98;
+  --coast-deep: #4a7a85;
+  --shore: #3a4a4c;
+
+  --paper-hi: #2c404c;
+  --frame: #eee5d2;
+  --hobby-b: #213540;
+  --hobby-c: rgb(36 62 56 / 0.75);
+  --music-card: #263945;
+  --paper-rgb: 34 50 61;
+  --cream-rgb: 27 41 51;
+  --oat-rgb: 43 62 73;
+  --accent-bg: #3b6a49;
+  --accent-hover: #468056;
+  --on-accent: #fdf8ee;
+  --focus: #b9e3c1;
+
+  --line: rgb(236 226 205 / 0.13);
+  --line-strong: rgb(236 226 205 / 0.26);
+
+  --shadow-soft: 0 1px 2px rgb(0 0 0 / 0.3), 0 8px 22px -10px rgb(0 0 0 / 0.6);
+  --shadow-lift: 0 2px 4px rgb(0 0 0 / 0.32), 0 16px 34px -14px rgb(0 0 0 / 0.65);
+  --shadow-panel: 0 2px 8px rgb(0 0 0 / 0.35), 0 40px 90px -30px rgb(0 0 0 / 0.75);
+  --press: inset 0 -3px 0 rgb(0 0 0 / 0.28);
+}
+
+/* The page behind the 3D scene, before and while it loads. */
+:root[data-theme='dark'] .world3d {
+  --bg-c: #34475a;
+  --bg-m: #152433;
+  --bg-e: #080f17;
+}
+
+:root[data-theme='dark'] .world3d.is-board {
+  --bg-c: #1f4650;
+  --bg-m: #143741;
+  --bg-e: #0b2530;
+}
+
+/* The flat fallback board (used when WebGL is unavailable). */
+:root[data-theme='dark'] .stage {
+  background: radial-gradient(120% 95% at 62% 50%, #2a5560 0%, #1b424c 58%, #123039 100%);
+}
+
+:root[data-theme='dark'] .stage::after {
+  background:
+    radial-gradient(130% 100% at 60% 50%, rgb(0 0 0 / 0) 60%, rgb(0 0 0 / 0.3) 100%),
+    var(--paper-grain);
+}
+
+:root[data-theme='dark'] .overlay__scrim {
+  background: rgb(6 12 18 / 0.55);
+}
+
+:root[data-theme='dark'] .token {
+  background: radial-gradient(circle at 38% 32%, #4a5d68 0%, #364853 70%, #2b3b46 100%);
+}
+
+/* Brighter outlines for focus, so they stay clear on dark surfaces. */
+:root[data-theme='dark'] :focus-visible {
+  outline-color: var(--focus);
+}
+
+/* A short, even change of colour when the theme is switched (not applied on first load). */
+:root.theme-fade body,
+:root.theme-fade body * {
+  transition-property: background-color, color, border-color, box-shadow, fill, stroke, opacity !important;
+  transition-duration: 600ms !important;
+  transition-timing-function: ease !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root.theme-fade body,
+  :root.theme-fade body * {
+    transition-duration: 120ms !important;
+  }
+}

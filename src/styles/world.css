@@ -101,7 +101,7 @@
 
 .dest3d[data-hot] .dest__plaque {
   transform: translate(-50%, calc(-50% - 4px));
-  background: #fffdf7;
+  background: var(--paper-hi);
   box-shadow: var(--press), var(--shadow-lift);
 }
 
@@ -118,7 +118,7 @@
 }
 
 .dest3d.is-active .dest__plaque {
-  background: #fffdf7;
+  background: var(--paper-hi);
   box-shadow:
     0 0 0 3px rgb(79 110 81 / 0.35),
     var(--shadow-lift);
@@ -138,7 +138,7 @@
   font-size: 0.88rem;
   font-weight: 600;
   white-space: nowrap;
-  color: var(--paper);
+  color: var(--on-dark);
   background: rgb(59 49 41 / 0.78);
   border-radius: 999px;
   transform: translateX(-50%);
@@ -206,7 +206,7 @@
 
 .btn--lamp {
   min-width: 13rem;
-  color: var(--ink);
+  color: #3b3129; /* fixed: it sits on a cream button in both themes */
   background: #f3e6c9;
   box-shadow:
     0 0 0 1px rgb(255 240 210 / 0.35),
@@ -257,7 +257,7 @@
 .world-intro__skip {
   position: absolute;
   top: clamp(0.75rem, 2vh, 1.25rem);
-  right: clamp(0.75rem, 2vw, 1.5rem);
+  right: var(--cord-gutter);
 }
 
 .world-intro__skip .box-skip {
