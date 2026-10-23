@@ -257,7 +257,7 @@
 .world-intro__skip {
   position: absolute;
   top: clamp(0.75rem, 2vh, 1.25rem);
-  right: var(--cord-gutter);
+  right: clamp(0.75rem, 2vw, 1.5rem);
 }
 
 .world-intro__skip .box-skip {

@@ -218,8 +218,9 @@
 }
 
 /* ---------- Pull-cord theme switch ----------
-   A small cord hangs from the top-right corner. The header, the content bar and the intro's skip
-   button leave a narrow gutter for it, so it never sits on top of a control. */
+   A small cord hangs from the top-left corner, away from the crowded right side (Résumé, Menu,
+   Skip). The header and the content bar leave a narrow gutter for it on the left, so it never
+   sits on top of a control. */
 :root {
   --cord-gutter: 3.1rem;
 }
@@ -227,7 +228,7 @@
 .cord {
   position: fixed;
   top: 0;
-  right: 0.4rem;
+  left: 0.4rem;
   z-index: 90;
   width: 2.6rem;
   height: 7rem;
@@ -311,15 +312,14 @@
 }
 
 .site-header__inner {
-  padding-inline-end: var(--cord-gutter);
+  padding-inline-start: var(--cord-gutter);
 }
-
 
 /* Small screens: keep the robber beside the name and leave room for the cord. */
 @media (max-width: 640px) {
   .site-header__inner {
     gap: 0.35rem;
-    padding-inline-start: 0.75rem;
+    padding-inline-end: 0.75rem;
   }
 
   .brand {
@@ -342,5 +342,34 @@
   .menu-button {
     gap: 0.45rem;
     padding-inline: 0.8rem;
+  }
+}
+
+/* Very small phones: the cord's gutter sits on the left, so tighten the right side a little. */
+@media (max-width: 350px) {
+  :root {
+    --cord-gutter: 2.9rem;
+  }
+
+  .cord {
+    left: 0.3rem;
+    width: 2.4rem;
+  }
+
+  .site-header__inner {
+    padding-inline-end: 0.5rem;
+  }
+
+  .brand__name {
+    font-size: 1rem;
+  }
+
+  .site-header__compact .nav-link--resume,
+  .menu-button {
+    padding-inline: 0.5rem;
+  }
+
+  .site-header__compact .nav-link--resume .glyph {
+    display: none;
   }
 }
