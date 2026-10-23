@@ -28,19 +28,19 @@ export const interests = [
     links: [{ label: 'See the ADCC analysis', to: '/projects/adcc' }],
     photos: [
       {
-        src: '/beyond/bjj/surfight-mats.webp',
-        alt: 'Two people in gis smiling on the green mats at Surfight, one in white with a black belt and one in black with a blue belt.',
-        caption: 'On the mats at Surfight.',
-        width: 480,
-        height: 640,
-      },
-      {
         src: '/beyond/bjj/jjwl-san-diego.webp',
         alt: 'Holding a medal in front of the Jiu Jitsu World League San Diego banner.',
         caption: 'Jiu Jitsu World League, San Diego.',
         width: 747,
         height: 1600,
         position: '50% 35%',
+      },
+      {
+        src: '/beyond/bjj/grappling.webp',
+        alt: 'Two grapplers in dark shirts on a mat, one behind the other with an arm around the other’s neck.',
+        caption: 'Grappling.',
+        width: 428,
+        height: 640,
       },
       {
         src: '/beyond/bjj/agf-podium.webp',
